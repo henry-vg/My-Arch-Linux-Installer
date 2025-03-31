@@ -136,7 +136,7 @@ genfstab -U /mnt >> /mnt/etc/fstab
 echo "Configuring system..."
 arch-chroot /mnt /bin/bash <<EOF
 pacman -Sy --noconfirm
-ln -sf /usr/share/zoneinfo/$TIMEZONE /etc/localtime
+ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
 hwclock --systohc
 echo "pt_BR.UTF-8 UTF-8" >> /etc/locale.gen
 locale-gen
