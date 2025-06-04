@@ -85,7 +85,7 @@ echo "Available disks:"
 lsblk -d -n -p -o NAME,SIZE,TYPE
 while true; do
     read -rp "Insert the disk name to install Arch Linux: " DISK
-    if ! lsblk -d -n -p -o NAME,TYPE | grep -E "^$DISK disk$" > /dev/null; then
+    if ! lsblk -d -n -p -o NAME,TYPE | grep -E "^$DISK\s+disk$" > /dev/null; then
         echo "ERROR! Invalid disk name. Try again."
         continue
     fi
