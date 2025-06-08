@@ -86,7 +86,7 @@ while true; do
         echo "ERROR! Invalid hostname. Please, follow the rules above and try again."
         continue
     fi
-    breakMore actions
+    break
 done
 pause
 
