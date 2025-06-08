@@ -15,14 +15,79 @@ pause
 # ----------------------- Configurações -----------------------
 echo "[2/10] Configurações iniciais"
 
-# Senha root
-# ... (mesmo código de validação de senha root)
-# Usuário
-# ... (validação de nome de usuário)
-# Senha do usuário
-# ... (validação de senha de usuário)
-# Hostname
-# ... (validação do hostname)
+# Escolha da senha do rootMore actions
+echo "Password Rules:"
+echo "  - Must contain at least one letter, one digit, or one special character"
+echo "  - Must be between 3 and 32 characters long."
+echo
+while true; do
+    read -rsp "Insert root's password: " ROOT_PASSWORD
+    echo
+    read -rsp "Confirm root's password: " ROOT_PASSWORD_CONFIRM
+    echo
+    if [[ "$ROOT_PASSWORD" != "$ROOT_PASSWORD_CONFIRM" ]]; then
+        echo "ERROR! Passwords do not match. Try again."
+        continue
+    fi
+    if [[ ${#ROOT_PASSWORD} -lt 3 || ${#ROOT_PASSWORD} -gt 32 || ! "$ROOT_PASSWORD" =~ [a-zA-Z] && ! "$ROOT_PASSWORD" =~ [0-9] && ! "$ROOT_PASSWORD" =~ [[:punct:]] ]]; then
+        echo "ERROR! Invalid password. Please, follow the rules above and try again."
+        continue
+    fi
+    break
+done
+
+# Escolha do nome do usuário
+echo "Username Rules:"
+echo "  - Must start with a lowercase letter."
+echo "  - Can only contain lowercase letters, numbers, hyphens and underscores."
+echo "  - Must be between 3 and 32 characters long."
+echo "  - Cannot already exist on the system."
+echo
+while true; do
+    read -rp "Insert the desired username: " USERNAME
+    if [[ ! "$USERNAME" =~ ^[a-z][-a-z0-9_]{2,31}$ ]] || id "$USERNAME" &>/dev/null; then
+        echo "ERROR! Invalid username. Please, follow the rules above and try again."
+        continue
+    fi
+    break
+done
+
+# Escolha da senha do usuário
+echo "Password Rules:"
+echo "  - Must contain at least one letter, one digit, or one special character"
+echo "  - Must be between 3 and 32 characters long."
+echo
+while true; do
+    read -rsp "Insert $USERNAME's password: " USER_PASSWORD
+    echo
+    read -rsp "Confirm $USERNAME's password: " USER_PASSWORD_CONFIRM
+    echo
+    if [[ "$USER_PASSWORD" != "$USER_PASSWORD_CONFIRM" ]]; then
+        echo "ERROR! Passwords do not match. Try again."
+        continue
+    fi
+    if [[ ${#USER_PASSWORD} -lt 3 || ${#USER_PASSWORD} -gt 32 || ! "$USER_PASSWORD" =~ [a-zA-Z] && ! "$USER_PASSWORD" =~ [0-9] && ! "$USER_PASSWORD" =~ [[:punct:]] ]]; then
+        echo "ERROR! Invalid password. Please, follow the rules above and try again."
+        continue
+    fi
+    break
+done
+
+# Escolha do hostname
+echo "Hostname Rules:"
+echo "  - Must contain only lowercase letters, numbers, hyphens, and dots."
+echo "  - Cannot start or end with a hyphen."
+echo "  - Must be at most 253 characters long."
+echo "  - Each segment (split by dots) must be at most 63 characters long."
+echo
+while true; do
+    read -rp "Insert the desired hostname: " HOSTNAME
+    if [[ ! "$HOSTNAME" =~ ^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9]))*$ ]] || [[ ${#HOSTNAME} -gt 253 ]]; then
+        echo "ERROR! Invalid hostname. Please, follow the rules above and try again."
+        continue
+    fi
+    breakMore actions
+done
 pause
 
 # Escolha do disco
@@ -37,6 +102,36 @@ while true; do
     fi
     echo "Disco selecionado: $DISK"
     break
+done
+pause
+
+# ---------------------- Tamanhos personalizados ----------------------
+echo "[INFO] Será criada uma partição EFI (boot) de 512 MiB automaticamente."
+pause
+DISK_SIZE_BYTES=$(lsblk -b -dn -o SIZE "$DISK")
+DISK_SIZE_GIB=$((DISK_SIZE_BYTES / 1024 / 1024 / 1024 - 1))
+
+while true; do
+    echo "O disco tem aproximadamente ${DISK_SIZE_GIB} GiB."
+    read -rp "Tamanho (em GiB) para a particao root (/): " ROOT_SIZE
+    read -rp "Tamanho (em GiB) para a particao swap: " SWAP_SIZE
+
+    if ! [[ "$ROOT_SIZE" =~ ^[0-9]+$ && "$SWAP_SIZE" =~ ^[0-9]+$ ]]; then
+        echo "Erro: valores devem ser inteiros positivos."
+        continue
+    fi
+
+    TOTAL=$((512/1024 + ROOT_SIZE + SWAP_SIZE))  # 512MiB = ~0.5 GiB
+
+    if (( TOTAL >= DISK_SIZE_GIB )); then
+        echo "Erro: espaço solicitado excede o tamanho do disco."
+        continue
+    fi
+
+    FREE_LEFT=$((DISK_SIZE_GIB - TOTAL))
+    echo "✓ ${FREE_LEFT} GiB serão usados para /home"
+    read -rp "Confirmar particionamento com esses tamanhos? (s/n): " CONFIRMA
+    [[ "$CONFIRMA" =~ ^[sS]$ ]] && break
 done
 pause
 
