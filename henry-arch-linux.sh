@@ -136,14 +136,18 @@ done
 pause
 
 # Limpeza e particionamento
-echo "[4/10] Limpando e particionando o disco..."
+# ---------------------- Particionamento ----------------------
+ROOT_END=$((512/1024 + ROOT_SIZE))
+SWAP_END=$((ROOT_END + SWAP_SIZE))
+
+echo "[4/10] Limpando e particionando o disco $DISK..."
 wipefs --all "$DISK"
 parted -s "$DISK" mklabel gpt
-parted -s "$DISK" mkpart ESP fat32 1MiB 501MiB
+parted -s "$DISK" mkpart ESP fat32 1MiB 512MiB
 parted -s "$DISK" set 1 esp on
-parted -s "$DISK" mkpart primary ext4 501MiB 50.5GiB
-parted -s "$DISK" mkpart primary linux-swap 50.5GiB 58.5GiB
-parted -s "$DISK" mkpart primary ext4 58.5GiB 100%
+parted -s "$DISK" mkpart primary ext4 512MiB ${ROOT_END}GiB
+parted -s "$DISK" mkpart primary linux-swap ${ROOT_END}GiB ${SWAP_END}GiB
+parted -s "$DISK" mkpart primary ext4 ${SWAP_END}GiB 100%
 echo "✓ Particionamento concluído."
 pause
 
