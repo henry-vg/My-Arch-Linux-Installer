@@ -207,7 +207,7 @@ if [ ! -d /sys/firmware/efi ]; then
     exit 1
 fi
 
-arch-chroot /mnt /bin/bash "
+arch-chroot /mnt /bin/bash -c "
 pacman -S grub efibootmgr os-prober --noconfirm
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
 echo 'GRUB_DISABLE_OS_PROBER=false' >> /etc/default/grub
@@ -217,7 +217,7 @@ grub-mkconfig -o /boot/grub/grub.cfg
 echo "[OK] Bootloader installed."
 pause "[12/14] Installing graphical interface"
 
-arch-chroot /mnt /bin/bash "
+arch-chroot /mnt /bin/bash -c "
 pacman -S --noconfirm xorg-server nvidia nvidia-utils nvidia-prime nvidia-settings mesa gdm gnome-shell gnome-terminal gnome-control-center gnome-tweaks
 systemctl enable gdm
 "
@@ -225,7 +225,7 @@ systemctl enable gdm
 echo "[OK] Graphical environment installed."
 pause "[13/14] Installing extra tools"
 
-arch-chroot /mnt /bin/bash "
+arch-chroot /mnt /bin/bash -c "
 pacman -S --noconfirm firefox nautilus gimp network-manager-applet networkmanager-openvpn intel-ucode dosfstools ntfs-3g exfat-utils nano git wget curl zip unzip
 "
 
