@@ -168,7 +168,7 @@ swapon "${DISK}3"
 echo "[OK] Partitions mounted."
 pause "[8/14] Installing base system"
 
-pacstrap /mnt base linux linux-headers linux-firmware networkmanager wpa_supplicant sudo dhcpcd
+pacstrap /mnt base linux linux-firmware networkmanager sudo
 
 echo "[OK] Base system installed."
 pause "[9/14] Generating fstab"
@@ -218,7 +218,7 @@ echo "[OK] Bootloader installed."
 pause "[12/14] Installing graphical interface"
 
 arch-chroot /mnt /bin/bash -c "
-pacman -S --noconfirm xorg-server nvidia nvidia-utils nvidia-prime nvidia-settings mesa gdm gnome-shell gnome-terminal gnome-control-center gnome-tweaks
+pacman -S --noconfirm xorg-server gnome-shell gnome-session gnome-terminal gdm gnome-control-center mesa
 systemctl enable gdm
 "
 
@@ -226,7 +226,13 @@ echo "[OK] Graphical environment installed."
 pause "[13/14] Installing extra tools"
 
 arch-chroot /mnt /bin/bash -c "
-pacman -S --noconfirm firefox nautilus gimp network-manager-applet networkmanager-openvpn intel-ucode dosfstools ntfs-3g exfat-utils nano git wget curl zip unzip
+pacman -S --noconfirm \
+  firefox nautilus gvfs baobab gnome-system-monitor gnome-screenshot gnome-tweaks gnome-settings-daemon gnome-font-viewer gnome-disk-utility gnome-calculator gnome-clocks loupe gparted gnome-weather \
+  network-manager-applet networkmanager-openvpn \
+  intel-ucode nano git wget curl tree file lsof ncdu \
+  nmap net-tools inetutils traceroute rsync \
+  zip unzip p7zip \
+  noto-fonts noto-fonts-emoji ttf-dejavu ttf-liberation ttf-ubuntu-font-family ttf-droid
 "
 
 echo "[OK] Extra tools installed."
