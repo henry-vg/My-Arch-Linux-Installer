@@ -225,15 +225,15 @@ systemctl enable gdm
 echo "[OK] Graphical environment installed."
 pause "[13/14] Installing extra tools"
 
-arch-chroot /mnt /bin/bash -c "
-pacman -S --noconfirm \
-  firefox nautilus gvfs baobab gnome-system-monitor gnome-screenshot gnome-tweaks gnome-settings-daemon gnome-font-viewer gnome-disk-utility gnome-calculator gnome-clocks loupe gparted gnome-weather \
-  network-manager-applet networkmanager-openvpn \
-  intel-ucode nano git wget curl tree file lsof ncdu \
-  nmap net-tools inetutils traceroute rsync \
-  zip unzip p7zip \
-  noto-fonts noto-fonts-emoji ttf-dejavu ttf-liberation ttf-ubuntu-font-family ttf-droid
-"
+# arch-chroot /mnt /bin/bash -c "
+# pacman -S --noconfirm \
+#   firefox nautilus gvfs baobab gnome-system-monitor gnome-screenshot gnome-tweaks gnome-settings-daemon gnome-font-viewer gnome-disk-utility gnome-calculator gnome-clocks loupe gparted gnome-weather \
+#   network-manager-applet networkmanager-openvpn \
+#   intel-ucode which nano git wget curl tree file lsof ncdu \
+#   nmap net-tools inetutils traceroute rsync \
+#   zip unzip p7zip \
+#   noto-fonts noto-fonts-emoji ttf-dejavu ttf-liberation ttf-ubuntu-font-family ttf-droid
+# "
 
 echo "[OK] Extra tools installed."
 pause "[14/14] Finalizing installation"
