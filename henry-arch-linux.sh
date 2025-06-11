@@ -218,7 +218,7 @@ echo "[OK] Bootloader installed."
 pause "[12/14] Installing graphical interface"
 
 arch-chroot /mnt /bin/bash -c "
-pacman -S --noconfirm xorg-server gnome-shell gnome-session gnome-terminal gdm gnome-control-center mesa
+pacman -S --noconfirm xorg-server gnome-shell gnome-session gnome-terminal gdm mesa
 systemctl enable gdm
 "
 
@@ -227,7 +227,7 @@ pause "[13/14] Installing extra tools"
 
 # arch-chroot /mnt /bin/bash -c "
 # pacman -S --noconfirm \
-#   firefox nautilus gvfs baobab gnome-system-monitor gnome-screenshot gnome-tweaks gnome-settings-daemon gnome-font-viewer gnome-disk-utility gnome-calculator gnome-clocks loupe gparted gnome-weather \
+#   firefox nautilus gvfs baobab gnome-system-monitor gnome-screenshot gnome-control-center gnome-tweaks gnome-settings-daemon gnome-font-viewer gnome-disk-utility gnome-calculator gnome-clocks loupe gparted gnome-weather \
 #   network-manager-applet networkmanager-openvpn \
 #   intel-ucode which nano git wget curl tree file lsof ncdu \
 #   nmap net-tools inetutils traceroute rsync \
