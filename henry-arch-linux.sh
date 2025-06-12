@@ -227,15 +227,53 @@ systemctl enable gdm
 echo "[OK] Graphical environment installed."
 pause "[13/15] Installing extra tools"
 
-# arch-chroot /mnt /bin/bash -c "
-# pacman -S --noconfirm \
-#   firefox nautilus gvfs baobab gnome-system-monitor gnome-screenshot gnome-control-center gnome-tweaks gnome-settings-daemon gnome-font-viewer gnome-disk-utility gnome-calculator gnome-clocks loupe gparted gnome-weather \
-#   network-manager-applet networkmanager-openvpn \
-#   intel-ucode which nano git wget curl tree file lsof ncdu \
-#   nmap net-tools inetutils traceroute rsync \
-#   zip unzip p7zip \
-#   noto-fonts noto-fonts-emoji ttf-dejavu ttf-liberation ttf-ubuntu-font-family ttf-droid
-# "
+# firefox                  (web browser)
+# baobab                   (GNOME - analisador gráfico de uso do disco)
+# loupe                    (GNOME - visualizador de imagens)
+# gnome-system-monitor     (GNOME - monitor de processos e uso de recursos)
+# gnome-screenshot         (GNOME - captura de tela)
+# gnome-tweaks             (GNOME - ajustes avançados do ambiente)
+# gnome-font-viewer        (GNOME - visualizador e instalador de fontes)
+# gnome-disk-utility       (GNOME - gerenciador de discos com interface gráfica)
+# gnome-calculator         (GNOME - calculadora)
+# gnome-clocks             (GNOME - relógio com alarme, cronômetro e fuso horário)
+# gnome-weather            (GNOME - previsão do tempo)
+# gnome-backgrounds        (GNOME - papéis de parede)
+# gnome-calendar           (GNOME - calendário gráfico com eventos)
+# gnome-control-center     (GNOME - painel de configurações)
+# gnome-text-editor        (GNOME - editor de texto simples)
+# gnome-music              (GNOME - reprodutor de música)
+# gnome-browser-connector  (GNOME - para gerenciar extensões pelo browser)
+# totem                    (GNOME - reprodutor de vídeos)
+# gparted                  (editor de partições com interface gráfica)
+# network-manager-applet   (ícone de rede na bandeja do sistema)
+# networkmanager-openvpn   (suporte a conexões VPN do tipo OpenVPN)
+# intel-ucode              (microcódigo da Intel para melhorar segurança e estabilidade da CPU)
+# rclone                   (para sincronização com onedrive)
+# libreoffice              (office suite completo)
+# keepass                  (gerenciador de senhas)
+# xdotool                  (para autotype do keepass)
+# eyedropper               (seletor de cores na tela)
+# piper                    (configuração de periféricos)
+# base-devel               (conjunto essencial para compilar pacotes)
+# reflector                (para acelerar downloads (atualiza e ordena espelhos de repositório))
+# wget                     (download via terminal)
+# traceroute               (rastreador de pacotes na rede)
+# nmap                     (scanner de rede e segurança)
+# rsync                    (sincronização e backup de arquivos)
+# neovim                   (editor de texto avançado baseado no Vim)
+# bleachbit                (limpeza de arquivos temporários)
+# git                      (sistema de controle de versões)
+# which                    (localiza a localização de um executável no PATH)
+# nano                     (editor de texto simples e fácil no terminal)
+# tree                     (exibe estrutura de diretórios como uma árvore)
+# lsof                     (lista arquivos abertos por processos)
+# inetutils                (coleção de utilitários de rede)
+# zip                      (compactador de arquivos no formato .zip)
+
+arch-chroot /mnt /bin/bash -c "
+pacman -S --noconfirm firefox baobab loupe gnome-system-monitor gnome-screenshot gnome-tweaks gnome-font-viewer gnome-disk-utility gnome-calculator gnome-clocks gnome-weather gnome-backgrounds gnome-calendar gnome-control-center gnome-text-editor gnome-music gnome-browser-connector totem gparted network-manager-applet networkmanager-openvpn intel-ucode rclone libreoffice keepass xdotool eyedropper piper base-devel reflector wget traceroute nmap rsync neovim bleachbit git which nano tree lsof inetutils zip 
+"
 
 echo "[OK] Extra tools installed."
 pause "[14/15] Configuring user environment"
