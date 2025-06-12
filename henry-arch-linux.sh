@@ -277,20 +277,42 @@ pacman -S --noconfirm firefox baobab loupe gnome-system-monitor gnome-screenshot
 "
 
 echo "[OK] Extra tools installed."
-pause "[14/15] Configuring user environment"
+pause "[14/15] Creating post-installation configuration script"
 
 arch-chroot /mnt /bin/bash -c "
-runuser -l $USERNAME -c \"
-gsettings set org.gnome.desktop.input-sources sources \\\"[('xkb', 'br')]\\\"
+cat << 'EOF' > /home/$USERNAME/post-installation.sh
+#!/bin/bash
+
+# br-abnt2 keyboard layout
+gsettings set org.gnome.desktop.input-sources sources \"[('xkb', 'br')]\"
+
+# dark theme
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-gsettings set org.gnome.system.locale region 'pt_BR.UTF-8'
+
+# show seconds on clock
 gsettings set org.gnome.desktop.interface clock-show-seconds true
+
+# disable workspaces and fix it in 1
 gsettings set org.gnome.mutter dynamic-workspaces false
 gsettings set org.gnome.desktop.wm.preferences num-workspaces 1
+
+# window buttons
 gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
-\"
+
+# privacy
+gsettings set org.gnome.desktop.privacy remember-recent-files false
+gsettings set org.gnome.desktop.privacy remember-app-usage false
+gsettings set org.gnome.desktop.privacy remove-old-temp-files true
+gsettings set org.gnome.desktop.privacy remove-old-trash-files true
+
+echo 'Configurações aplicadas com sucesso.'
+EOF
+
+chown $USERNAME:users /home/$USERNAME/post-installation.sh
+chmod +x /home/$USERNAME/post-installation.sh
 "
-echo "[OK] User environment configured."
+
+echo "[OK] Post-installation script created at /home/$USERNAME/post-installation.sh"
 pause "[15/15] Finalizing installation"
 
 echo "Unmounting and rebooting..."
