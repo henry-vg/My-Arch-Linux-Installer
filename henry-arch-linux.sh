@@ -9,11 +9,11 @@ pause() {
     echo
 }
 
-echo "[1/14] Internet connection check"
+echo "[1/15] Internet connection check"
 ping -c 4 8.8.8.8 > /dev/null 2>&1 || { echo "[ERROR] No internet connection. Exiting..."; exit 1; }
 
 echo "[OK] Connected."
-pause "[2/14] Initial configuration"
+pause "[2/15] Initial configuration"
 
 echo "Password Rules:"
 echo "  - Must contain at least one letter, one digit, or one special character."
@@ -91,7 +91,7 @@ while true; do
     break
 done
 echo "[OK] Hostname set successfully."
-pause "[3/14] Disk selection"
+pause "[3/15] Disk selection"
 
 echo "Available disks:"
 lsblk -d -n -p -o NAME,SIZE,TYPE
@@ -106,7 +106,7 @@ while true; do
 done
 
 echo "A 512 MiB EFI (boot) partition will be created automatically."
-pause "[4/14] Disk sizing"
+pause "[4/15] Disk sizing"
 
 DISK_SIZE_BYTES=$(lsblk -b -dn -o SIZE "$DISK")
 DISK_SIZE_GIB=$((DISK_SIZE_BYTES / 1024 / 1024 / 1024 - 1))
@@ -132,7 +132,7 @@ while true; do
 done
 
 echo "[OK] ${FREE_LEFT} GiB will be allocated to /home."
-pause "[5/14] Disk partitioning"
+pause "[5/15] Disk partitioning"
 
 ROOT_END=$((512/1024 + ROOT_SIZE))
 SWAP_END=$((ROOT_END + SWAP_SIZE))
@@ -147,7 +147,7 @@ parted -s "$DISK" mkpart primary linux-swap ${ROOT_END}GiB ${SWAP_END}GiB
 parted -s "$DISK" mkpart primary ext4 ${SWAP_END}GiB 100%
 
 echo "[OK] Disk partitioned."
-pause "[6/14] Formatting partitions"
+pause "[6/15] Formatting partitions"
 
 mkfs.fat -F32 "${DISK}1"
 mkfs.ext4 "${DISK}2"
@@ -156,7 +156,7 @@ mkswap "${DISK}3"
 mkfs.ext4 "${DISK}4"
 
 echo "[OK] Partitions formatted."
-pause "[7/14] Mounting partitions"
+pause "[7/15] Mounting partitions"
 
 mount "${DISK}2" /mnt
 mkdir -p /mnt/boot/efi
@@ -166,17 +166,17 @@ mount "${DISK}4" /mnt/home
 swapon "${DISK}3"
 
 echo "[OK] Partitions mounted."
-pause "[8/14] Installing base system"
+pause "[8/15] Installing base system"
 
 pacstrap /mnt base linux linux-firmware networkmanager sudo
 
 echo "[OK] Base system installed."
-pause "[9/14] Generating fstab"
+pause "[9/15] Generating fstab"
 
 genfstab -U /mnt >> /mnt/etc/fstab
 
 echo "[OK] fstab generated."
-pause "[10/14] System configuration"
+pause "[10/15] System configuration"
 
 arch-chroot /mnt /bin/bash -c "
 pacman -Syu --noconfirm
@@ -200,7 +200,7 @@ systemctl enable NetworkManager
 "
 
 echo "[OK] System configured."
-pause "[11/14] Installing bootloader"
+pause "[11/15] Installing bootloader"
 
 if [ ! -d /sys/firmware/efi ]; then
     echo "[ERROR] System not booted in UEFI mode. GRUB install will fail."
@@ -215,7 +215,7 @@ grub-mkconfig -o /boot/grub/grub.cfg
 "
 
 echo "[OK] Bootloader installed."
-pause "[12/14] Installing graphical interface"
+pause "[12/15] Installing graphical interface"
 
 arch-chroot /mnt /bin/bash -c "
 pacman -S --noconfirm xorg-server gnome-shell gnome-session gnome-terminal gdm mesa
@@ -223,7 +223,7 @@ systemctl enable gdm
 "
 
 echo "[OK] Graphical environment installed."
-pause "[13/14] Installing extra tools"
+pause "[13/15] Installing extra tools"
 
 # arch-chroot /mnt /bin/bash -c "
 # pacman -S --noconfirm \
@@ -236,7 +236,21 @@ pause "[13/14] Installing extra tools"
 # "
 
 echo "[OK] Extra tools installed."
-pause "[14/14] Finalizing installation"
+# pause "[14/15] Configuring user environment"
+
+# arch-chroot /mnt /bin/bash -c "
+# runuser -l $USERNAME -c \"
+# gsettings set org.gnome.desktop.input-sources sources \\\"[('xkb', 'br')]\\\"
+# gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+# gsettings set org.gnome.system.locale region 'pt_BR.UTF-8'
+# gsettings set org.gnome.desktop.interface clock-show-seconds true
+# gsettings set org.gnome.mutter dynamic-workspaces false
+# gsettings set org.gnome.desktop.wm.preferences num-workspaces 1
+
+# \"
+# "
+# echo "[OK] User environment configured."
+pause "[15/15] Finalizing installation"
 
 echo "Unmounting and rebooting..."
 umount -lR /mnt
