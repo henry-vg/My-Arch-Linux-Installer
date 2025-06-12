@@ -199,6 +199,8 @@ echo '$USERNAME ALL=(ALL) ALL' | EDITOR='tee -a' visudo
 systemctl enable NetworkManager
 "
 
+unset ROOT_PASSWORD ROOT_PASSWORD_CONFIRM USER_PASSWORD USER_PASSWORD_CONFIRM
+
 echo "[OK] System configured."
 pause "[11/15] Installing bootloader"
 
@@ -259,7 +261,5 @@ for i in {5..1}; do
   echo "Rebooting in $i second(s)..."
   sleep 1
 done
-
-unset ROOT_PASSWORD ROOT_PASSWORD_CONFIRM USER_PASSWORD USER_PASSWORD_CONFIRM
 
 reboot
