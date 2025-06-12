@@ -28,7 +28,7 @@ while true; do
         echo "[ERROR] Passwords do not match. Try again."
         continue
     fi
-    if [[ ${#ROOT_PASSWORD} -lt 3 || ${#ROOT_PASSWORD} -gt 32 || ! ( "$ROOT_PASSWORD" =~ [a-zA-Z] || "$ROOT_PASSWORD" =~ [0-9] || "$ROOT_PASSWORD" =~ [[:punct:]] ) ]]; then
+    if [[ ${#ROOT_PASSWORD} -lt 3 || ${#ROOT_PASSWORD} -gt 32 || "$ROOT_PASSWORD" =~ [^a-zA-Z0-9[:punct:]] ]]; then
         echo "[ERROR] Invalid password. Follow the rules above and try again."
         continue
     fi
@@ -67,8 +67,7 @@ while true; do
         echo "[ERROR] Passwords do not match. Try again."
         continue
     fi
-    if [[ ${#USER_PASSWORD} -lt 3 || ${#USER_PASSWORD} -gt 32 || ! ( "$USER_PASSWORD" =~ [a-zA-Z] || "$USER_PASSWORD" =~ [0-9] || "$USER_PASSWORD" =~ [[:punct:]] ) ]]; then
-
+    if [[ ${#USER_PASSWORD} -lt 3 || ${#USER_PASSWORD} -gt 32 || "$USER_PASSWORD" =~ [^a-zA-Z0-9[:punct:]] ]]; then
         echo "[ERROR] Invalid password. Follow the rules above and try again."
         continue
     fi
