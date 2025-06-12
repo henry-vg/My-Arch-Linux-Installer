@@ -238,20 +238,20 @@ pause "[13/15] Installing extra tools"
 # "
 
 echo "[OK] Extra tools installed."
-# pause "[14/15] Configuring user environment"
+pause "[14/15] Configuring user environment"
 
-# arch-chroot /mnt /bin/bash -c "
-# runuser -l $USERNAME -c \"
-# gsettings set org.gnome.desktop.input-sources sources \\\"[('xkb', 'br')]\\\"
-# gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-# gsettings set org.gnome.system.locale region 'pt_BR.UTF-8'
-# gsettings set org.gnome.desktop.interface clock-show-seconds true
-# gsettings set org.gnome.mutter dynamic-workspaces false
-# gsettings set org.gnome.desktop.wm.preferences num-workspaces 1
-
-# \"
-# "
-# echo "[OK] User environment configured."
+arch-chroot /mnt /bin/bash -c "
+runuser -l $USERNAME -c \"
+gsettings set org.gnome.desktop.input-sources sources \\\"[('xkb', 'br')]\\\"
+gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+gsettings set org.gnome.system.locale region 'pt_BR.UTF-8'
+gsettings set org.gnome.desktop.interface clock-show-seconds true
+gsettings set org.gnome.mutter dynamic-workspaces false
+gsettings set org.gnome.desktop.wm.preferences num-workspaces 1
+gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
+\"
+"
+echo "[OK] User environment configured."
 pause "[15/15] Finalizing installation"
 
 echo "Unmounting and rebooting..."
