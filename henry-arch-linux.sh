@@ -245,6 +245,7 @@ pause "[13/15] Installing extra tools"
 # gnome-music              (GNOME - reprodutor de música)
 # gnome-browser-connector  (GNOME - para gerenciar extensões pelo browser)
 # totem                    (GNOME - reprodutor de vídeos)
+# dconf-editor             (GNOME - editor de configurações avançadas)
 # gparted                  (editor de partições com interface gráfica)
 # network-manager-applet   (ícone de rede na bandeja do sistema)
 # networkmanager-openvpn   (suporte a conexões VPN do tipo OpenVPN)
@@ -272,7 +273,7 @@ pause "[13/15] Installing extra tools"
 # zip                      (compactador de arquivos no formato .zip)
 
 arch-chroot /mnt /bin/bash -c "
-pacman -S --noconfirm firefox baobab loupe gnome-system-monitor gnome-screenshot gnome-tweaks gnome-font-viewer gnome-disk-utility gnome-calculator gnome-clocks gnome-weather gnome-backgrounds gnome-calendar gnome-control-center gnome-text-editor gnome-music gnome-browser-connector totem gparted network-manager-applet networkmanager-openvpn intel-ucode rclone libreoffice keepass xdotool eyedropper piper base-devel reflector wget traceroute nmap rsync neovim bleachbit git which nano tree lsof inetutils zip 
+pacman -S --noconfirm firefox baobab loupe gnome-system-monitor gnome-screenshot gnome-tweaks gnome-font-viewer gnome-disk-utility gnome-calculator gnome-clocks gnome-weather gnome-backgrounds gnome-calendar gnome-control-center gnome-text-editor gnome-music gnome-browser-connector totem dconf-editor gparted network-manager-applet networkmanager-openvpn intel-ucode rclone libreoffice keepass xdotool eyedropper piper base-devel reflector wget traceroute nmap rsync neovim bleachbit git which nano tree lsof inetutils zip 
 "
 
 echo "[OK] Extra tools installed."
