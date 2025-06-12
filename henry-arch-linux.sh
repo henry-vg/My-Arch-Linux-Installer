@@ -181,9 +181,10 @@ arch-chroot /mnt /bin/bash -c "
 pacman -Syu --noconfirm
 ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
 hwclock --systohc
+echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen
 echo 'pt_BR.UTF-8 UTF-8' >> /etc/locale.gen
 locale-gen
-echo 'LANG=pt_BR.UTF-8' > /etc/locale.conf
+echo 'LANG=en_US.UTF-8' > /etc/locale.conf
 echo 'KEYMAP=br-abnt2' > /etc/vconsole.conf
 echo '$HOSTNAME' > /etc/hostname
 cat <<EOT >> /etc/hosts
