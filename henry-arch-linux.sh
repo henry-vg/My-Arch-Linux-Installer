@@ -271,9 +271,34 @@ pause "[13/15] Installing extra tools"
 # lsof                     (lista arquivos abertos por processos)
 # inetutils                (coleção de utilitários de rede)
 # zip                      (compactador de arquivos no formato .zip)
+# nvidia                   (driver gráfico da NVIDIA)
+# nvidia-utils             (nvidia-utils para o driver gráfico da NVIDIA)
+# nvidia-settings          (para configurar o driver gráfico da NVIDIA)
+# nvidia-dkms              (driver NVIDIA para kernels mais recentes)
+# egl-wayland              (para suporte a Wayland com NVIDIA)
+# lm_sensors               (para monitoramento de sensores de hardware)
+# lshw                     (para listar informações detalhadas de hardware)
+# nvtop                    (monitor de uso de GPU da NVIDIA)
+# pipewire                 (servidor de multimídia moderno)
+# pipewire-alsa            (suporte a ALSA para PipeWire)
+# pipewire-pulse           (suporte a PulseAudio para PipeWire)
+# wireplumber              (gerenciador de sessão para PipeWire)
+# noto-fonts               (fonte)
+# noto-fonts-extra         (fonte)
+# gnu-free-fonts           (fonte)
+# ttf-dejavu               (fonte)
+# ttf-liberation           (fonte)
+# ttf-droid                (fonte)
+# ttf-roboto               (fonte)
+
+# yay                      (AUR helper)
+
+# xcursor-breeze           (tema de cursor do KDE)
+# gnome-extensions-cli     (gerencia extensões do GNOME)
 
 arch-chroot /mnt /bin/bash -c "
-pacman -S --noconfirm firefox baobab loupe gnome-system-monitor gnome-screenshot gnome-tweaks gnome-font-viewer gnome-disk-utility gnome-calculator gnome-clocks gnome-weather gnome-backgrounds gnome-calendar gnome-control-center gnome-text-editor gnome-music gnome-browser-connector totem dconf-editor gparted network-manager-applet networkmanager-openvpn intel-ucode rclone libreoffice keepass xdotool eyedropper piper base-devel reflector wget traceroute nmap rsync neovim bleachbit git which nano tree lsof inetutils zip 
+pacman -S --noconfirm firefox baobab loupe gnome-system-monitor gnome-screenshot gnome-tweaks gnome-font-viewer gnome-disk-utility gnome-calculator gnome-clocks gnome-weather gnome-backgrounds gnome-calendar gnome-control-center gnome-text-editor gnome-music gnome-browser-connector totem dconf-editor gparted network-manager-applet networkmanager-openvpn intel-ucode rclone libreoffice keepass xdotool eyedropper piper base-devel reflector wget traceroute nmap rsync neovim bleachbit git which nano tree lsof inetutils zip nvidia nvidia-utils nvidia-settings nvidia-dkms egl-wayland lm_sensors lshw nvtop pipewire pipewire-alsa pipewire-pulse wireplumber noto-fonts noto-fonts-extra gnu-free-fonts ttf-dejavu ttf-liberation ttf-droid ttf-roboto
+sensors-detect --auto
 "
 
 echo "[OK] Extra tools installed."
@@ -283,29 +308,37 @@ arch-chroot /mnt /bin/bash -c "
 cat << 'EOF' > /home/$USERNAME/post-installation.sh
 #!/bin/bash
 
-# br-abnt2 keyboard layout
+if [ \"$EUID\" -eq 0 ]; then
+  echo \"Please run this script as a regular user, not root.\"
+  exit 1
+fi
+
+git clone https://aur.archlinux.org/yay.git
+makepkg -D yay -si --noconfirm
+rm -rf yay
+yay -S --noconfirm xcursor-breeze
+
 gsettings set org.gnome.desktop.input-sources sources \"[('xkb', 'br')]\"
-
-# dark theme
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-
-# show seconds on clock
+gsettings set org.gnome.desktop.interface accent-color 'red'
 gsettings set org.gnome.desktop.interface clock-show-seconds true
-
-# disable workspaces and fix it in 1
+gsettings set org.gnome.desktop.interface clock-format '24h'
 gsettings set org.gnome.mutter dynamic-workspaces false
 gsettings set org.gnome.desktop.wm.preferences num-workspaces 1
-
-# window buttons
 gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
-
-# privacy
 gsettings set org.gnome.desktop.privacy remember-recent-files false
 gsettings set org.gnome.desktop.privacy remember-app-usage false
 gsettings set org.gnome.desktop.privacy remove-old-temp-files true
 gsettings set org.gnome.desktop.privacy remove-old-trash-files true
+gsettings set org.gnome.desktop.interface cursor-theme 'Breeze_Light'
+gsettings set org.gnome.desktop.interface cursor-size 32
+gsettings set org.gnome.desktop.interface document-font-name 'Roboto 11'
+gsettings set org.gnome.desktop.interface font-name 'Roboto 11'
+gsettings set org.gnome.desktop.interface monospace-font-name 'DejaVu Sans Mono 11'
+gsettings set org.gnome.calculator button-mode 'advanced'
 
 echo 'Configurações aplicadas com sucesso.'
+rm -- \"$0\"
 EOF
 
 chown $USERNAME:users /home/$USERNAME/post-installation.sh
