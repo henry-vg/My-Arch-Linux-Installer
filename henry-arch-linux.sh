@@ -1,4 +1,4 @@
-# #!/bin/bash
+#!/bin/bash
 
 # pause() {
 #     echo
@@ -357,8 +357,6 @@
 # done
 
 # reboot
-
-#!/bin/bash
 
 pause() {
     echo
