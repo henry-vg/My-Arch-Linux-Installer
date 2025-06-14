@@ -219,133 +219,147 @@ grub-mkconfig -o /boot/grub/grub.cfg
 echo "[OK] Bootloader installed."
 pause "[12/15] Installing graphical interface"
 
+# arch-chroot /mnt /bin/bash -c "
+# pacman -S --noconfirm xorg-server gnome-shell gnome-session gnome-terminal gdm mesa
+# systemctl enable gdm
+# "
+
 arch-chroot /mnt /bin/bash -c "
-pacman -S --noconfirm xorg-server gnome-shell gnome-session gnome-terminal gdm mesa
-systemctl enable gdm
+pacman -S --noconfirm \
+  xorg-server \
+  xfwm4 \
+  xfce4-panel \
+  xfce4-session \
+  xfce4-settings \
+  xfce4-terminal \
+  lightdm \
+  lightdm-gtk-greeter \
+  mesa
+systemctl enable lightdm
 "
 
 echo "[OK] Graphical environment installed."
-pause "[13/15] Installing extra tools"
+# pause "[13/15] Installing extra tools"
 
-# firefox                  (web browser)
-# baobab                   (GNOME - analisador gráfico de uso do disco)
-# loupe                    (GNOME - visualizador de imagens)
-# gnome-system-monitor     (GNOME - monitor de processos e uso de recursos)
-# gnome-screenshot         (GNOME - captura de tela)
-# gnome-tweaks             (GNOME - ajustes avançados do ambiente)
-# gnome-font-viewer        (GNOME - visualizador e instalador de fontes)
-# gnome-disk-utility       (GNOME - gerenciador de discos com interface gráfica)
-# gnome-calculator         (GNOME - calculadora)
-# gnome-clocks             (GNOME - relógio com alarme, cronômetro e fuso horário)
-# gnome-weather            (GNOME - previsão do tempo)
-# gnome-backgrounds        (GNOME - papéis de parede)
-# gnome-calendar           (GNOME - calendário gráfico com eventos)
-# gnome-control-center     (GNOME - painel de configurações)
-# gnome-text-editor        (GNOME - editor de texto simples)
-# gnome-music              (GNOME - reprodutor de música)
-# gnome-browser-connector  (GNOME - para gerenciar extensões pelo browser)
-# totem                    (GNOME - reprodutor de vídeos)
-# dconf-editor             (GNOME - editor de configurações avançadas)
-# gparted                  (editor de partições com interface gráfica)
-# network-manager-applet   (ícone de rede na bandeja do sistema)
-# networkmanager-openvpn   (suporte a conexões VPN do tipo OpenVPN)
-# intel-ucode              (microcódigo da Intel para melhorar segurança e estabilidade da CPU)
-# rclone                   (para sincronização com onedrive)
-# libreoffice              (office suite completo)
-# keepass                  (gerenciador de senhas)
-# xdotool                  (para autotype do keepass)
-# eyedropper               (seletor de cores na tela)
-# piper                    (configuração de periféricos)
-# base-devel               (conjunto essencial para compilar pacotes)
-# reflector                (para acelerar downloads (atualiza e ordena espelhos de repositório))
-# wget                     (download via terminal)
-# traceroute               (rastreador de pacotes na rede)
-# nmap                     (scanner de rede e segurança)
-# rsync                    (sincronização e backup de arquivos)
-# neovim                   (editor de texto avançado baseado no Vim)
-# bleachbit                (limpeza de arquivos temporários)
-# git                      (sistema de controle de versões)
-# which                    (localiza a localização de um executável no PATH)
-# nano                     (editor de texto simples e fácil no terminal)
-# tree                     (exibe estrutura de diretórios como uma árvore)
-# lsof                     (lista arquivos abertos por processos)
-# inetutils                (coleção de utilitários de rede)
-# zip                      (compactador de arquivos no formato .zip)
-# nvidia                   (driver gráfico da NVIDIA)
-# nvidia-utils             (nvidia-utils para o driver gráfico da NVIDIA)
-# nvidia-settings          (para configurar o driver gráfico da NVIDIA)
-# nvidia-dkms              (driver NVIDIA para kernels mais recentes)
-# egl-wayland              (para suporte a Wayland com NVIDIA)
-# lm_sensors               (para monitoramento de sensores de hardware)
-# lshw                     (para listar informações detalhadas de hardware)
-# nvtop                    (monitor de uso de GPU da NVIDIA)
-# pipewire                 (servidor de multimídia moderno)
-# pipewire-alsa            (suporte a ALSA para PipeWire)
-# pipewire-pulse           (suporte a PulseAudio para PipeWire)
-# wireplumber              (gerenciador de sessão para PipeWire)
-# noto-fonts               (fonte)
-# noto-fonts-extra         (fonte)
-# gnu-free-fonts           (fonte)
-# ttf-dejavu               (fonte)
-# ttf-liberation           (fonte)
-# ttf-droid                (fonte)
-# ttf-roboto               (fonte)
+# # firefox                  (web browser)
+# # baobab                   (GNOME - analisador gráfico de uso do disco)
+# # loupe                    (GNOME - visualizador de imagens)
+# # gnome-system-monitor     (GNOME - monitor de processos e uso de recursos)
+# # gnome-screenshot         (GNOME - captura de tela)
+# # gnome-tweaks             (GNOME - ajustes avançados do ambiente)
+# # gnome-font-viewer        (GNOME - visualizador e instalador de fontes)
+# # gnome-disk-utility       (GNOME - gerenciador de discos com interface gráfica)
+# # gnome-calculator         (GNOME - calculadora)
+# # gnome-clocks             (GNOME - relógio com alarme, cronômetro e fuso horário)
+# # gnome-weather            (GNOME - previsão do tempo)
+# # gnome-backgrounds        (GNOME - papéis de parede)
+# # gnome-calendar           (GNOME - calendário gráfico com eventos)
+# # gnome-control-center     (GNOME - painel de configurações)
+# # gnome-text-editor        (GNOME - editor de texto simples)
+# # gnome-music              (GNOME - reprodutor de música)
+# # gnome-browser-connector  (GNOME - para gerenciar extensões pelo browser)
+# # totem                    (GNOME - reprodutor de vídeos)
+# # dconf-editor             (GNOME - editor de configurações avançadas)
+# # gparted                  (editor de partições com interface gráfica)
+# # network-manager-applet   (ícone de rede na bandeja do sistema)
+# # networkmanager-openvpn   (suporte a conexões VPN do tipo OpenVPN)
+# # intel-ucode              (microcódigo da Intel para melhorar segurança e estabilidade da CPU)
+# # rclone                   (para sincronização com onedrive)
+# # libreoffice              (office suite completo)
+# # keepass                  (gerenciador de senhas)
+# # xdotool                  (para autotype do keepass)
+# # eyedropper               (seletor de cores na tela)
+# # piper                    (configuração de periféricos)
+# # base-devel               (conjunto essencial para compilar pacotes)
+# # reflector                (para acelerar downloads (atualiza e ordena espelhos de repositório))
+# # wget                     (download via terminal)
+# # traceroute               (rastreador de pacotes na rede)
+# # nmap                     (scanner de rede e segurança)
+# # rsync                    (sincronização e backup de arquivos)
+# # neovim                   (editor de texto avançado baseado no Vim)
+# # bleachbit                (limpeza de arquivos temporários)
+# # git                      (sistema de controle de versões)
+# # which                    (localiza a localização de um executável no PATH)
+# # nano                     (editor de texto simples e fácil no terminal)
+# # tree                     (exibe estrutura de diretórios como uma árvore)
+# # lsof                     (lista arquivos abertos por processos)
+# # inetutils                (coleção de utilitários de rede)
+# # zip                      (compactador de arquivos no formato .zip)
+# # nvidia                   (driver gráfico da NVIDIA)
+# # nvidia-utils             (nvidia-utils para o driver gráfico da NVIDIA)
+# # nvidia-settings          (para configurar o driver gráfico da NVIDIA)
+# # nvidia-dkms              (driver NVIDIA para kernels mais recentes)
+# # egl-wayland              (para suporte a Wayland com NVIDIA)
+# # lm_sensors               (para monitoramento de sensores de hardware)
+# # lshw                     (para listar informações detalhadas de hardware)
+# # nvtop                    (monitor de uso de GPU da NVIDIA)
+# # pipewire                 (servidor de multimídia moderno)
+# # pipewire-alsa            (suporte a ALSA para PipeWire)
+# # pipewire-pulse           (suporte a PulseAudio para PipeWire)
+# # wireplumber              (gerenciador de sessão para PipeWire)
+# # noto-fonts               (fonte)
+# # noto-fonts-extra         (fonte)
+# # gnu-free-fonts           (fonte)
+# # ttf-dejavu               (fonte)
+# # ttf-liberation           (fonte)
+# # ttf-droid                (fonte)
+# # ttf-roboto               (fonte)
 
-# yay                      (AUR helper)
+# # yay                      (AUR helper)
 
-# xcursor-breeze           (tema de cursor do KDE)
-# gnome-extensions-cli     (gerencia extensões do GNOME)
+# # xcursor-breeze           (tema de cursor do KDE)
+# # gnome-extensions-cli     (gerencia extensões do GNOME)
 
-arch-chroot /mnt /bin/bash -c "
-pacman -S --noconfirm firefox baobab loupe gnome-system-monitor gnome-screenshot gnome-tweaks gnome-font-viewer gnome-disk-utility gnome-calculator gnome-clocks gnome-weather gnome-backgrounds gnome-calendar gnome-control-center gnome-text-editor gnome-music gnome-browser-connector totem dconf-editor gparted network-manager-applet networkmanager-openvpn intel-ucode rclone libreoffice keepass xdotool eyedropper piper base-devel reflector wget traceroute nmap rsync neovim bleachbit git which nano tree lsof inetutils zip nvidia nvidia-utils nvidia-settings nvidia-dkms egl-wayland lm_sensors lshw nvtop pipewire pipewire-alsa pipewire-pulse wireplumber noto-fonts noto-fonts-extra gnu-free-fonts ttf-dejavu ttf-liberation ttf-droid ttf-roboto
-sensors-detect --auto
-"
+# arch-chroot /mnt /bin/bash -c "
+# pacman -S --noconfirm firefox baobab loupe gnome-system-monitor gnome-screenshot gnome-tweaks gnome-font-viewer gnome-disk-utility gnome-calculator gnome-clocks gnome-weather gnome-backgrounds gnome-calendar gnome-control-center gnome-text-editor gnome-music gnome-browser-connector totem dconf-editor gparted network-manager-applet networkmanager-openvpn intel-ucode rclone libreoffice keepass xdotool eyedropper piper base-devel reflector wget traceroute nmap rsync neovim bleachbit git which nano tree lsof inetutils zip nvidia nvidia-utils nvidia-settings nvidia-dkms egl-wayland lm_sensors lshw nvtop pipewire pipewire-alsa pipewire-pulse wireplumber noto-fonts noto-fonts-extra gnu-free-fonts ttf-dejavu ttf-liberation ttf-droid ttf-roboto
+# sensors-detect --auto
+# "
 
-echo "[OK] Extra tools installed."
-pause "[14/15] Creating post-installation configuration script"
+# echo "[OK] Extra tools installed."
+# pause "[14/15] Creating post-installation configuration script"
 
-arch-chroot /mnt /bin/bash -c "
-cat << 'EOF' > /home/$USERNAME/post-installation.sh
-#!/bin/bash
+# arch-chroot /mnt /bin/bash -c "
+# cat << 'EOF' > /home/$USERNAME/post-installation.sh
+# #!/bin/bash
 
-if [ \"$EUID\" -eq 0 ]; then
-  echo \"Please run this script as a regular user, not root.\"
-  exit 1
-fi
+# if [ \"$EUID\" -eq 0 ]; then
+#   echo \"Please run this script as a regular user, not root.\"
+#   exit 1
+# fi
 
-git clone https://aur.archlinux.org/yay.git
-makepkg -D yay -si --noconfirm
-rm -rf yay
-yay -S --noconfirm xcursor-breeze pamac-aur
+# git clone https://aur.archlinux.org/yay.git
+# makepkg -D yay -si --noconfirm
+# rm -rf yay
+# yay -S --noconfirm xcursor-breeze pamac-aur
 
-gsettings set org.gnome.desktop.input-sources sources \"[('xkb', 'br')]\"
-gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-gsettings set org.gnome.desktop.interface accent-color 'red'
-gsettings set org.gnome.desktop.interface clock-show-seconds true
-gsettings set org.gnome.desktop.interface clock-format '24h'
-gsettings set org.gnome.mutter dynamic-workspaces false
-gsettings set org.gnome.desktop.wm.preferences num-workspaces 1
-gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
-gsettings set org.gnome.desktop.privacy remember-recent-files false
-gsettings set org.gnome.desktop.privacy remember-app-usage false
-gsettings set org.gnome.desktop.privacy remove-old-temp-files true
-gsettings set org.gnome.desktop.privacy remove-old-trash-files true
-gsettings set org.gnome.desktop.interface cursor-theme 'Breeze_Light'
-gsettings set org.gnome.desktop.interface cursor-size 32
-gsettings set org.gnome.desktop.interface document-font-name 'Roboto 11'
-gsettings set org.gnome.desktop.interface font-name 'Roboto 11'
-gsettings set org.gnome.desktop.interface monospace-font-name 'DejaVu Sans Mono 11'
-gsettings set org.gnome.calculator button-mode 'advanced'
+# gsettings set org.gnome.desktop.input-sources sources \"[('xkb', 'br')]\"
+# gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+# gsettings set org.gnome.desktop.interface accent-color 'red'
+# gsettings set org.gnome.desktop.interface clock-show-seconds true
+# gsettings set org.gnome.desktop.interface clock-format '24h'
+# gsettings set org.gnome.mutter dynamic-workspaces false
+# gsettings set org.gnome.desktop.wm.preferences num-workspaces 1
+# gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
+# gsettings set org.gnome.desktop.privacy remember-recent-files false
+# gsettings set org.gnome.desktop.privacy remember-app-usage false
+# gsettings set org.gnome.desktop.privacy remove-old-temp-files true
+# gsettings set org.gnome.desktop.privacy remove-old-trash-files true
+# gsettings set org.gnome.desktop.interface cursor-theme 'Breeze_Light'
+# gsettings set org.gnome.desktop.interface cursor-size 32
+# gsettings set org.gnome.desktop.interface document-font-name 'Roboto 11'
+# gsettings set org.gnome.desktop.interface font-name 'Roboto 11'
+# gsettings set org.gnome.desktop.interface monospace-font-name 'DejaVu Sans Mono 11'
+# gsettings set org.gnome.calculator button-mode 'advanced'
 
-echo 'Configurações aplicadas com sucesso.'
-rm -- \"$0\"
-EOF
+# echo 'Configurações aplicadas com sucesso.'
+# rm -- \"$0\"
+# EOF
 
-chown $USERNAME:users /home/$USERNAME/post-installation.sh
-chmod +x /home/$USERNAME/post-installation.sh
-"
+# chown $USERNAME:users /home/$USERNAME/post-installation.sh
+# chmod +x /home/$USERNAME/post-installation.sh
+# "
 
-echo "[OK] Post-installation script created at /home/$USERNAME/post-installation.sh"
+# echo "[OK] Post-installation script created at /home/$USERNAME/post-installation.sh"
 pause "[15/15] Finalizing installation"
 
 echo "Unmounting and rebooting..."
@@ -357,3 +371,7 @@ for i in {5..1}; do
 done
 
 reboot
+
+# TODO : tirar verificação de root no post-installation
+# TODO : adicionar removedor de arquivos no yay do post-installation
+# TODO : gimp inkscape
