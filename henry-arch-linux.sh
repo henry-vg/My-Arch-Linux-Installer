@@ -309,7 +309,7 @@ arch-chroot /mnt /bin/bash -c "
 cat << 'EOF' > /home/$USERNAME/post-installation.sh
 #!/bin/bash
 
-if [ \"$EUID\" -eq 0 ]; then
+if [ \"\$EUID\" -eq 0 ]; then
     echo \"Please run this script as a regular user, not root.\"
     exit 1
 fi
@@ -321,14 +321,14 @@ yay -S --noconfirm --cleanafter --nodiffmenu --noeditmenu xcursor-breeze pamac-a
 
 if pacman -Qdtq &>/dev/null; then
     echo \"Removing pacman orphaned dependencies...\"
-    sudo pacman -Rns --noconfirm $(pacman -Qdtq)
+    sudo pacman -Rns --noconfirm \$(pacman -Qdtq)
 else
     echo \"No pacman orphaned packages to remove.\"
 fi
 
 if yay -Qdtq &>/dev/null; then
     echo \"Removing AUR orphaned dependencies...\"
-    yay -Rns --noconfirm $(yay -Qdtq)
+    yay -Rns --noconfirm \$(yay -Qdtq)
 else
     echo \"No AUR orphaned packages to remove.\"
 fi
