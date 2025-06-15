@@ -335,7 +335,7 @@ fi
 
 gsettings set org.gnome.desktop.input-sources sources \"[('xkb', 'br')]\"
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-gsettings set org.gnome.desktop.interface accent-color 'gray'
+gsettings set org.gnome.desktop.interface accent-color 'slate'
 gsettings set org.gnome.desktop.interface clock-show-seconds true
 gsettings set org.gnome.desktop.interface clock-format '24h'
 gsettings set org.gnome.mutter dynamic-workspaces false
