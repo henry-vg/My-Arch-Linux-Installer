@@ -299,7 +299,7 @@ pause "[13/15] Installing extra tools"
 arch-chroot /mnt /bin/bash -c "
 pacman -S --noconfirm firefox baobab loupe gnome-system-monitor gnome-screenshot gnome-tweaks gnome-font-viewer gnome-disk-utility gnome-calculator gnome-clocks gnome-weather gnome-backgrounds gnome-calendar gnome-control-center gnome-text-editor gnome-music gnome-browser-connector totem dconf-editor gparted network-manager-applet networkmanager-openvpn intel-ucode rclone libreoffice keepass xdotool eyedropper piper base-devel reflector wget traceroute nmap rsync neovim bleachbit git which nano tree lsof inetutils zip nvidia nvidia-utils nvidia-settings nvidia-dkms egl-wayland lm_sensors lshw nvtop pipewire pipewire-alsa pipewire-pulse wireplumber noto-fonts noto-fonts-extra gnu-free-fonts ttf-dejavu ttf-liberation ttf-droid ttf-roboto
 sensors-detect --auto
-reflector --country Brazil --age 12 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+reflector --verbose --latest 10 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 "
 
 echo "[OK] Extra tools installed."
