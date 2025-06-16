@@ -9,11 +9,11 @@ pause() {
     echo
 }
 
-echo "[1/15] Internet connection check"
+echo "[1/13] Internet connection check"
 ping -c 4 8.8.8.8 > /dev/null 2>&1 || { echo "[ERROR] No internet connection. Exiting..."; exit 1; }
 
 echo "[OK] Connected."
-pause "[2/15] Initial configuration"
+pause "[2/13] Initial configuration"
 
 echo "Password Rules:"
 echo "  - Must contain at least one letter, one digit, or one special character."
@@ -90,7 +90,7 @@ while true; do
     break
 done
 echo "[OK] Hostname set successfully."
-pause "[3/15] Disk selection"
+pause "[3/13] Disk selection"
 
 echo "Available disks:"
 lsblk -d -n -p -o NAME,SIZE,TYPE
@@ -105,7 +105,7 @@ while true; do
 done
 
 echo "A 512 MiB EFI (boot) partition will be created automatically."
-pause "[4/15] Disk sizing"
+pause "[4/13] Disk sizing"
 
 DISK_SIZE_BYTES=$(lsblk -b -dn -o SIZE "$DISK")
 DISK_SIZE_GIB=$((DISK_SIZE_BYTES / 1024 / 1024 / 1024 - 1))
@@ -131,7 +131,7 @@ while true; do
 done
 
 echo "[OK] ${FREE_LEFT} GiB will be allocated to /home."
-pause "[5/15] Disk partitioning"
+pause "[5/13] Disk partitioning"
 
 ROOT_END=$((512/1024 + ROOT_SIZE))
 SWAP_END=$((ROOT_END + SWAP_SIZE))
@@ -146,7 +146,7 @@ parted -s "$DISK" mkpart primary linux-swap ${ROOT_END}GiB ${SWAP_END}GiB
 parted -s "$DISK" mkpart primary ext4 ${SWAP_END}GiB 100%
 
 echo "[OK] Disk partitioned."
-pause "[6/15] Formatting partitions"
+pause "[6/13] Formatting partitions"
 
 mkfs.fat -F32 "${DISK}1"
 mkfs.ext4 "${DISK}2"
@@ -155,7 +155,7 @@ mkswap "${DISK}3"
 mkfs.ext4 "${DISK}4"
 
 echo "[OK] Partitions formatted."
-pause "[7/15] Mounting partitions"
+pause "[7/13] Mounting partitions"
 
 mount "${DISK}2" /mnt
 mkdir -p /mnt/boot/efi
@@ -165,17 +165,17 @@ mount "${DISK}4" /mnt/home
 swapon "${DISK}3"
 
 echo "[OK] Partitions mounted."
-pause "[8/15] Installing base system"
+pause "[8/13] Installing base system"
 
 pacstrap /mnt base linux linux-firmware networkmanager sudo
 
 echo "[OK] Base system installed."
-pause "[9/15] Generating fstab"
+pause "[9/13] Generating fstab"
 
 genfstab -U /mnt >> /mnt/etc/fstab
 
 echo "[OK] fstab generated."
-pause "[10/15] System configuration"
+pause "[10/13] System configuration"
 
 arch-chroot /mnt /bin/bash -c "
 pacman -Syu --noconfirm
@@ -202,7 +202,7 @@ systemctl enable NetworkManager
 unset ROOT_PASSWORD ROOT_PASSWORD_CONFIRM USER_PASSWORD USER_PASSWORD_CONFIRM
 
 echo "[OK] System configured."
-pause "[11/15] Installing bootloader"
+pause "[11/13] Installing bootloader"
 
 if [ ! -d /sys/firmware/efi ]; then
     echo "[ERROR] System not booted in UEFI mode. GRUB install will fail."
@@ -217,150 +217,12 @@ grub-mkconfig -o /boot/grub/grub.cfg
 "
 
 echo "[OK] Bootloader installed."
-pause "[12/15] Installing graphical interface"
+pause "[12/13] Installing graphical interface"
 
-arch-chroot /mnt /bin/bash -c "
-pacman -S --noconfirm xorg-server gnome-shell gnome-session gnome-terminal gdm mesa
-systemctl enable gdm
-"
-
-echo "[OK] Graphical environment installed."
-pause "[13/15] Installing extra tools"
-
-# firefox                  (web browser)
-# gimp                     (editor de imagens avançado)
-# inkscape                 (editor de gráficos vetoriais)
-# baobab                   (GNOME - analisador gráfico de uso do disco)
-# loupe                    (GNOME - visualizador de imagens)
-# gnome-system-monitor     (GNOME - monitor de processos e uso de recursos)
-# gnome-screenshot         (GNOME - captura de tela)
-# gnome-tweaks             (GNOME - ajustes avançados do ambiente)
-# gnome-font-viewer        (GNOME - visualizador e instalador de fontes)
-# gnome-disk-utility       (GNOME - gerenciador de discos com interface gráfica)
-# gnome-calculator         (GNOME - calculadora)
-# gnome-clocks             (GNOME - relógio com alarme, cronômetro e fuso horário)
-# gnome-weather            (GNOME - previsão do tempo)
-# gnome-backgrounds        (GNOME - papéis de parede)
-# gnome-calendar           (GNOME - calendário gráfico com eventos)
-# gnome-control-center     (GNOME - painel de configurações)
-# gnome-text-editor        (GNOME - editor de texto simples)
-# gnome-music              (GNOME - reprodutor de música)
-# gnome-browser-connector  (GNOME - para gerenciar extensões pelo browser)
-# totem                    (GNOME - reprodutor de vídeos)
-# dconf-editor             (GNOME - editor de configurações avançadas)
-# network-manager-applet   (ícone de rede na bandeja do sistema)
-# networkmanager-openvpn   (suporte a conexões VPN do tipo OpenVPN)
-# intel-ucode              (microcódigo da Intel para melhorar segurança e estabilidade da CPU)
-# rclone                   (para sincronização com onedrive)
-# libreoffice              (office suite completo)
-# keepass                  (gerenciador de senhas)
-# xdotool                  (para autotype do keepass)
-# eyedropper               (seletor de cores na tela)
-# piper                    (configuração de periféricos)
-# base-devel               (conjunto essencial para compilar pacotes)
-# reflector                (para acelerar downloads (atualiza e ordena espelhos de repositório))
-# wget                     (download via terminal)
-# traceroute               (rastreador de pacotes na rede)
-# nmap                     (scanner de rede e segurança)
-# rsync                    (sincronização e backup de arquivos)
-# neovim                   (editor de texto avançado baseado no Vim)
-# bleachbit                (limpeza de arquivos temporários)
-# git                      (sistema de controle de versões)
-# which                    (localiza a localização de um executável no PATH)
-# nano                     (editor de texto simples e fácil no terminal)
-# tree                     (exibe estrutura de diretórios como uma árvore)
-# lsof                     (lista arquivos abertos por processos)
-# inetutils                (coleção de utilitários de rede)
-# zip                      (compactador de arquivos no formato .zip)
-# nvidia                   (driver gráfico da NVIDIA)
-# nvidia-utils             (nvidia-utils para o driver gráfico da NVIDIA)
-# nvidia-settings          (para configurar o driver gráfico da NVIDIA)
-# nvidia-dkms              (driver NVIDIA para kernels mais recentes)
-# egl-wayland              (para suporte a Wayland com NVIDIA)
-# lm_sensors               (para monitoramento de sensores de hardware)
-# lshw                     (para listar informações detalhadas de hardware)
-# nvtop                    (monitor de uso de GPU da NVIDIA)
-# pipewire                 (servidor de multimídia moderno)
-# pipewire-alsa            (suporte a ALSA para PipeWire)
-# pipewire-pulse           (suporte a PulseAudio para PipeWire)
-# wireplumber              (gerenciador de sessão para PipeWire)
-# noto-fonts               (fonte)
-# noto-fonts-extra         (fonte)
-# gnu-free-fonts           (fonte)
-# ttf-dejavu               (fonte)
-# ttf-liberation           (fonte)
-# ttf-droid                (fonte)
-# ttf-roboto               (fonte)
-
-# yay                      (AUR helper)
-
-# xcursor-breeze           (tema de cursor do KDE)
-
-arch-chroot /mnt /bin/bash -c "
-pacman -S --noconfirm firefox gimp inkscape baobab loupe gnome-system-monitor gnome-screenshot gnome-tweaks gnome-font-viewer gnome-disk-utility gnome-calculator gnome-clocks gnome-weather gnome-backgrounds gnome-calendar gnome-control-center gnome-text-editor gnome-music gnome-browser-connector totem dconf-editor gparted network-manager-applet networkmanager-openvpn intel-ucode rclone libreoffice keepass xdotool eyedropper piper base-devel reflector wget traceroute nmap rsync neovim bleachbit git which nano tree lsof inetutils zip nvidia nvidia-utils nvidia-settings nvidia-dkms egl-wayland lm_sensors lshw nvtop pipewire pipewire-alsa pipewire-pulse wireplumber noto-fonts noto-fonts-extra gnu-free-fonts ttf-dejavu ttf-liberation ttf-droid ttf-roboto
-sensors-detect --auto
-reflector --verbose --latest 10 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
-"
+# TODO: implement graphical interface installation
 
 echo "[OK] Extra tools installed."
-pause "[14/15] Creating post-installation configuration script"
-
-arch-chroot /mnt /bin/bash -c "
-cat << 'EOF' > /home/$USERNAME/post-installation.sh
-#!/bin/bash
-
-if [ \"\$EUID\" -eq 0 ]; then
-    echo \"Please run this script as a regular user, not root.\"
-    exit 1
-fi
-
-git clone https://aur.archlinux.org/yay.git
-makepkg -D yay -si --noconfirm
-rm -rf yay
-yay -S --noconfirm --cleanafter --nodiffmenu --noeditmenu xcursor-breeze pamac-aur
-
-if pacman -Qdtq &>/dev/null; then
-    echo \"Removing pacman orphaned dependencies...\"
-    sudo pacman -Rns --noconfirm \$(pacman -Qdtq)
-else
-    echo \"No pacman orphaned packages to remove.\"
-fi
-
-if yay -Qdtq &>/dev/null; then
-    echo \"Removing AUR orphaned dependencies...\"
-    yay -Rns --noconfirm \$(yay -Qdtq)
-else
-    echo \"No AUR orphaned packages to remove.\"
-fi
-
-gsettings set org.gnome.desktop.input-sources sources \"[('xkb', 'br')]\"
-gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-gsettings set org.gnome.desktop.interface accent-color 'slate'
-gsettings set org.gnome.desktop.interface clock-show-seconds true
-gsettings set org.gnome.desktop.interface clock-format '24h'
-gsettings set org.gnome.mutter dynamic-workspaces false
-gsettings set org.gnome.desktop.wm.preferences num-workspaces 1
-gsettings set org.gnome.desktop.wm.preferences button-layout ':minimize,maximize,close'
-gsettings set org.gnome.desktop.privacy remember-recent-files false
-gsettings set org.gnome.desktop.privacy remember-app-usage false
-gsettings set org.gnome.desktop.privacy remove-old-temp-files true
-gsettings set org.gnome.desktop.privacy remove-old-trash-files true
-gsettings set org.gnome.desktop.interface cursor-theme 'Breeze_Light'
-gsettings set org.gnome.desktop.interface cursor-size 32
-gsettings set org.gnome.desktop.interface document-font-name 'Roboto 11'
-gsettings set org.gnome.desktop.interface font-name 'Roboto 11'
-gsettings set org.gnome.desktop.interface monospace-font-name 'DejaVu Sans Mono 11'
-gsettings set org.gnome.calculator button-mode 'advanced'
-
-echo 'Configurações aplicadas com sucesso.'
-EOF
-
-chown $USERNAME:users /home/$USERNAME/post-installation.sh
-chmod +x /home/$USERNAME/post-installation.sh
-"
-
-echo "[OK] Post-installation script created at /home/$USERNAME/post-installation.sh"
-pause "[15/15] Finalizing installation"
+pause "[13/13] Finalizing installation"
 
 echo "Unmounting and rebooting..."
 umount -lR /mnt
