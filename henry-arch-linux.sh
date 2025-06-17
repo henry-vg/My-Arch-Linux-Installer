@@ -227,7 +227,7 @@ echo "[OK] Bootloader installed."
 # pacman -S --noconfirm xorg i3-wm i3status dmenu picom dunst kitty flameshot firefox thunar nnn redshift code feh lxappearance pavucontrol pipewire pipewire-alsa pipewire-pulse wireplumber ttf-hack ttf-jetbrains-mono noto-fonts ttf-dejavu ttf-liberation polkit gvfs udisks2 xdg-utils xdg-user-dirs ly reflector
 # systemctl enable ly
 
-# reflector --verbose -p https -c Brazil -a 6 -f 10 --sort rate --save /etc/pacman.d/mirrorlist
+# reflector --verbose --country Brazil --latest 10 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 
 # cat << 'EOF' > /home/$USERNAME/.xinitrc
 # exec i3
