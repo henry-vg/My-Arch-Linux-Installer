@@ -221,44 +221,23 @@ grub-mkconfig -o /boot/grub/grub.cfg
 "
 
 echo "[OK] Bootloader installed."
-# pause "[12/13] Installing graphical interface and environment"
+pause "[12/13] Installing graphical interface and environment"
 
-# arch-chroot /mnt /bin/bash -c "
-# pacman -S --noconfirm xorg i3-wm i3status dmenu picom dunst kitty flameshot firefox thunar nnn redshift code feh lxappearance pavucontrol pipewire pipewire-alsa pipewire-pulse wireplumber ttf-hack ttf-jetbrains-mono noto-fonts ttf-dejavu ttf-liberation polkit gvfs udisks2 xdg-utils xdg-user-dirs ly reflector
-# systemctl enable ly
-
-# reflector --verbose --country Brazil --latest 10 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
-
-# cat << 'EOF' > /home/$USERNAME/.xinitrc
-# exec i3
-# EOF
-
-# chown $USERNAME:users /home/$USERNAME/.xinitrc
-# runuser -l $USERNAME -c 'xdg-user-dirs-update'
-
-# mkdir -p /home/$USERNAME/wallpapers
-# chown $USERNAME:users /home/$USERNAME/wallpapers
-# mkdir -p /home/$USERNAME/.config/i3
-# cat << 'EOF' > /home/$USERNAME/.config/i3/config
-# exec_always --no-startup-id feh --bg-scale /home/$USERNAME/wallpapers/wallpaper.jpg
-# exec --no-startup-id picom
-# EOF
-
-# chown -R $USERNAME:users /home/$USERNAME/.config
-# "
+arch-chroot /mnt /bin/bash -c "
+pacman -S --noconfirm xorg i3-wm i3status dmenu picom dunst kitty flameshot firefox thunar nnn redshift code feh lxappearance pavucontrol pipewire pipewire-alsa pipewire-pulse wireplumber ttf-hack ttf-jetbrains-mono noto-fonts ttf-dejavu ttf-liberation polkit gvfs udisks2 xdg-utils xdg-user-dirs ly reflector
+systemctl enable ly
+reflector --verbose --country Brazil --latest 10 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+mkdir -p /home/$USERNAME/wallpapers
+chown $USERNAME:users /home/$USERNAME/wallpapers
+"
 
 
-# echo "[OK] Graphical interface and environment installed."
+echo "[OK] Graphical interface and environment installed."
 pause "[13/13] Finalizing installation"
 
 echo "Unmounting and rebooting..."
 umount -lR /mnt
 swapoff -a
-
-# echo "Opening installer log for review..."
-# sleep 2
-# mv installer.log /home/"$USERNAME"/installer.log
-# nano /home/"$USERNAME"/installer.log
 
 unset ROOT_PASSWORD ROOT_PASSWORD_CONFIRM USER_PASSWORD USER_PASSWORD_CONFIRM
 for i in {5..1}; do
