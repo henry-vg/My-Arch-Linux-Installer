@@ -247,7 +247,6 @@ EOF
 chown -R $USERNAME:users /home/$USERNAME/.config
 "
 
-unset ROOT_PASSWORD ROOT_PASSWORD_CONFIRM USER_PASSWORD USER_PASSWORD_CONFIRM
 
 echo "[OK] Graphical interface and environment installed."
 pause "[13/13] Finalizing installation"
@@ -258,9 +257,10 @@ swapoff -a
 
 echo "Opening installer log for review..."
 sleep 2
-mv installer.log /mnt/root/installer.log
-nano /mnt/root/installer.log
+mv installer.log /home/"$USERNAME"/installer.log
+nano /home/"$USERNAME"/installer.log
 
+unset ROOT_PASSWORD ROOT_PASSWORD_CONFIRM USER_PASSWORD USER_PASSWORD_CONFIRM
 # for i in {5..1}; do
 #   echo "Rebooting in $i second(s)..."
 #   sleep 1
