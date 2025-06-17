@@ -2,7 +2,7 @@
 
 set -e
 
-exec > >(tee -i /mnt/root/installer.log)
+exec > >(tee -i installer.log)
 exec 2>&1
 
 
@@ -256,6 +256,7 @@ swapoff -a
 
 echo "Opening installer log for review..."
 sleep 2
+mv installer.log /mnt/root/installer.log
 nano /mnt/root/installer.log
 
 # for i in {5..1}; do
