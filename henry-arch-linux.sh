@@ -2,6 +2,10 @@
 
 set -e
 
+exec > >(tee -i /mnt/root/installer.log)
+exec 2>&1
+
+
 pause() {
     echo
     if [ -n "$1" ]; then
@@ -249,9 +253,14 @@ pause "[13/13] Finalizing installation"
 echo "Unmounting and rebooting..."
 umount -lR /mnt
 swapoff -a
-for i in {5..1}; do
-  echo "Rebooting in $i second(s)..."
-  sleep 1
-done
 
-reboot
+echo "Opening installer log for review..."
+sleep 2
+nano /mnt/root/installer.log
+
+# for i in {5..1}; do
+#   echo "Rebooting in $i second(s)..."
+#   sleep 1
+# done
+
+# reboot
