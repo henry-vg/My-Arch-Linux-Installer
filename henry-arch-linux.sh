@@ -5,7 +5,6 @@ set -e
 exec > >(tee -i installer.log)
 exec 2>&1
 
-
 pause() {
     echo
     if [ -n "$1" ]; then
@@ -15,11 +14,19 @@ pause() {
     echo
 }
 
+if [ ! -d /sys/firmware/efi ]; then
+    echo "[ERROR] System not booted in UEFI mode. GRUB install will fail."
+    exit 1
+fi
+
 echo "[1/13] Internet connection check"
 ping -c 4 8.8.8.8 > /dev/null 2>&1 || { echo "[ERROR] No internet connection. Exiting..."; exit 1; }
 
 echo "[OK] Connected."
+
+# --------------------------------
 pause "[2/13] Initial configuration"
+# --------------------------------
 
 echo "Password Rules:"
 echo "  - Must contain at least one letter, one digit, or one special character."
@@ -96,7 +103,10 @@ while true; do
     break
 done
 echo "[OK] Hostname set successfully."
+
+# --------------------------------
 pause "[3/13] Disk selection"
+# --------------------------------
 
 echo "Available disks:"
 lsblk -d -n -p -o NAME,SIZE,TYPE
@@ -111,7 +121,10 @@ while true; do
 done
 
 echo "A 512 MiB EFI (boot) partition will be created automatically."
+
+# --------------------------------
 pause "[4/13] Disk sizing"
+# --------------------------------
 
 DISK_SIZE_BYTES=$(lsblk -b -dn -o SIZE "$DISK")
 DISK_SIZE_GIB=$((DISK_SIZE_BYTES / 1024 / 1024 / 1024 - 1))
@@ -137,7 +150,10 @@ while true; do
 done
 
 echo "[OK] ${FREE_LEFT} GiB will be allocated to /home."
+
+# --------------------------------
 pause "[5/13] Disk partitioning"
+# --------------------------------
 
 ROOT_END=$((512/1024 + ROOT_SIZE))
 SWAP_END=$((ROOT_END + SWAP_SIZE))
@@ -152,7 +168,10 @@ parted -s "$DISK" mkpart primary linux-swap ${ROOT_END}GiB ${SWAP_END}GiB
 parted -s "$DISK" mkpart primary ext4 ${SWAP_END}GiB 100%
 
 echo "[OK] Disk partitioned."
+
+# --------------------------------
 pause "[6/13] Formatting partitions"
+# --------------------------------
 
 mkfs.fat -F32 "${DISK}1"
 mkfs.ext4 "${DISK}2"
@@ -161,7 +180,10 @@ mkswap "${DISK}3"
 mkfs.ext4 "${DISK}4"
 
 echo "[OK] Partitions formatted."
+
+# --------------------------------
 pause "[7/13] Mounting partitions"
+# --------------------------------
 
 mount "${DISK}2" /mnt
 mkdir -p /mnt/boot/efi
@@ -171,17 +193,26 @@ mount "${DISK}4" /mnt/home
 swapon "${DISK}3"
 
 echo "[OK] Partitions mounted."
+
+# --------------------------------
 pause "[8/13] Installing base system"
+# --------------------------------
 
 pacstrap /mnt base linux linux-firmware networkmanager sudo
 
 echo "[OK] Base system installed."
+
+# --------------------------------
 pause "[9/13] Generating fstab"
+# --------------------------------
 
 genfstab -U /mnt >> /mnt/etc/fstab
 
 echo "[OK] fstab generated."
+
+# --------------------------------
 pause "[10/13] System configuration"
+# --------------------------------
 
 arch-chroot /mnt /bin/bash -c "
 pacman -Syu --noconfirm
@@ -206,12 +237,10 @@ systemctl enable NetworkManager
 "
 
 echo "[OK] System configured."
-pause "[11/13] Installing bootloader"
 
-if [ ! -d /sys/firmware/efi ]; then
-    echo "[ERROR] System not booted in UEFI mode. GRUB install will fail."
-    exit 1
-fi
+# --------------------------------
+pause "[11/13] Installing bootloader"
+# --------------------------------
 
 arch-chroot /mnt /bin/bash -c "
 pacman -S grub efibootmgr os-prober --noconfirm
@@ -221,7 +250,10 @@ grub-mkconfig -o /boot/grub/grub.cfg
 "
 
 echo "[OK] Bootloader installed."
+
+# --------------------------------
 pause "[12/13] Installing graphical interface and environment"
+# --------------------------------
 
 arch-chroot /mnt /bin/bash -c "
 pacman -S --noconfirm xorg i3-wm i3status dmenu picom dunst kitty flameshot firefox thunar nnn redshift code feh lxappearance pavucontrol pipewire pipewire-alsa pipewire-pulse wireplumber ttf-hack ttf-jetbrains-mono noto-fonts ttf-dejavu ttf-liberation polkit gvfs udisks2 xdg-utils xdg-user-dirs ly reflector
@@ -231,9 +263,11 @@ mkdir -p /home/$USERNAME/wallpapers
 chown $USERNAME:users /home/$USERNAME/wallpapers
 "
 
-
 echo "[OK] Graphical interface and environment installed."
+
+# --------------------------------
 pause "[13/13] Finalizing installation"
+# --------------------------------
 
 echo "Unmounting and rebooting..."
 umount -lR /mnt
