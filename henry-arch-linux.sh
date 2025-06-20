@@ -16,13 +16,13 @@ if [ ! -d /sys/firmware/efi ]; then
     exit 1
 fi
 
-echo "[1/12] Internet connection check"
+echo "[1/13] Internet connection check"
 ping -c 4 8.8.8.8 > /dev/null 2>&1 || { echo "[ERROR] No internet connection. Exiting..."; exit 1; }
 
 echo "[OK] Connected."
 
 # --------------------------------
-pause "[2/12] Initial configuration"
+pause "[2/13] Initial configuration"
 # --------------------------------
 
 echo "Password Rules:"
@@ -102,7 +102,7 @@ done
 echo "[OK] Hostname set successfully."
 
 # --------------------------------
-pause "[3/12] Disk selection"
+pause "[3/13] Disk selection"
 # --------------------------------
 
 echo "Available disks:"
@@ -120,7 +120,7 @@ done
 echo "A 512 MiB EFI (boot) partition will be created automatically."
 
 # --------------------------------
-pause "[4/12] Disk sizing"
+pause "[4/13] Disk sizing"
 # --------------------------------
 
 DISK_SIZE_BYTES=$(lsblk -b -dn -o SIZE "$DISK")
@@ -149,7 +149,7 @@ done
 echo "[OK] ${FREE_LEFT} GiB will be allocated to /home."
 
 # --------------------------------
-pause "[5/12] Disk partitioning"
+pause "[5/13] Disk partitioning"
 # --------------------------------
 
 ROOT_END=$((512/1024 + ROOT_SIZE))
@@ -167,7 +167,7 @@ parted -s "$DISK" mkpart primary ext4 ${SWAP_END}GiB 100%
 echo "[OK] Disk partitioned."
 
 # --------------------------------
-pause "[6/12] Formatting partitions"
+pause "[6/13] Formatting partitions"
 # --------------------------------
 
 mkfs.fat -F32 "${DISK}1"
@@ -179,7 +179,7 @@ mkfs.ext4 "${DISK}4"
 echo "[OK] Partitions formatted."
 
 # --------------------------------
-pause "[7/12] Mounting partitions"
+pause "[7/13] Mounting partitions"
 # --------------------------------
 
 mount "${DISK}2" /mnt
@@ -192,7 +192,7 @@ swapon "${DISK}3"
 echo "[OK] Partitions mounted."
 
 # --------------------------------
-pause "[8/12] Installing base system"
+pause "[8/13] Installing base system"
 # --------------------------------
 
 pacstrap /mnt base linux linux-firmware networkmanager sudo reflector
@@ -200,7 +200,7 @@ pacstrap /mnt base linux linux-firmware networkmanager sudo reflector
 echo "[OK] Base system installed."
 
 # --------------------------------
-pause "[9/12] Generating fstab"
+pause "[9/13] Generating fstab"
 # --------------------------------
 
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -208,7 +208,7 @@ genfstab -U /mnt >> /mnt/etc/fstab
 echo "[OK] fstab generated."
 
 # --------------------------------
-pause "[10/12] System configuration"
+pause "[10/13] System configuration"
 # --------------------------------
 
 arch-chroot /mnt /bin/bash -c "
@@ -239,7 +239,7 @@ unset ROOT_PASSWORD ROOT_PASSWORD_CONFIRM USER_PASSWORD USER_PASSWORD_CONFIRM
 echo "[OK] System configured."
 
 # --------------------------------
-pause "[11/12] Installing bootloader"
+pause "[11/13] Installing bootloader"
 # --------------------------------
 
 arch-chroot /mnt /bin/bash -c "
@@ -252,7 +252,18 @@ grub-mkconfig -o /boot/grub/grub.cfg
 echo "[OK] Bootloader installed."
 
 # --------------------------------
-pause "[12/12] Finalizing installation"
+pause "[12/13] Installing graphical environment"
+# --------------------------------
+
+arch-chroot /mnt /bin/bash -c "
+pacman -S --noconfirm xorg-server xorg-xinit i3-wm lightdm lightdm-gtk-greeter rofi kitty
+systemctl enable lightdm
+"
+
+echo "[OK] Graphical environment installed."
+
+# --------------------------------
+pause "[12/13] Finalizing installation"
 # --------------------------------
 
 echo "Unmounting and rebooting..."
