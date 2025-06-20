@@ -2,9 +2,6 @@
 
 set -e
 
-exec > >(tee -i installer.log)
-exec 2>&1
-
 pause() {
     echo
     if [ -n "$1" ]; then
@@ -236,6 +233,8 @@ echo '$USERNAME ALL=(ALL) ALL' | EDITOR='tee -a' visudo
 systemctl enable NetworkManager
 "
 
+unset ROOT_PASSWORD ROOT_PASSWORD_CONFIRM USER_PASSWORD USER_PASSWORD_CONFIRM
+
 echo "[OK] System configured."
 
 # --------------------------------
@@ -256,11 +255,10 @@ pause "[12/13] Installing graphical interface and environment"
 # --------------------------------
 
 arch-chroot /mnt /bin/bash -c "
-pacman -S --noconfirm xorg i3-wm i3status dmenu picom dunst kitty flameshot firefox thunar nnn redshift code feh lxappearance pavucontrol pipewire pipewire-alsa pipewire-pulse wireplumber ttf-hack ttf-jetbrains-mono noto-fonts ttf-dejavu ttf-liberation polkit gvfs udisks2 xdg-utils xdg-user-dirs ly reflector
+pacman -S --noconfirm hyprland kitty wofi ttf-hack xdg-user-dirs ly
+
 systemctl enable ly
 reflector --verbose --country Brazil --latest 10 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
-mkdir -p /home/$USERNAME/wallpapers
-chown $USERNAME:users /home/$USERNAME/wallpapers
 "
 
 echo "[OK] Graphical interface and environment installed."
@@ -273,7 +271,6 @@ echo "Unmounting and rebooting..."
 umount -lR /mnt
 swapoff -a
 
-unset ROOT_PASSWORD ROOT_PASSWORD_CONFIRM USER_PASSWORD USER_PASSWORD_CONFIRM
 for i in {5..1}; do
   echo "Rebooting in $i second(s)..."
   sleep 1
