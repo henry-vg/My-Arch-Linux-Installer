@@ -256,7 +256,9 @@ pause "[12/13] Installing graphical environment"
 # --------------------------------
 
 arch-chroot /mnt /bin/bash -c "
-pacman -S --noconfirm xorg-server xorg-xinit i3-wm lightdm lightdm-gtk-greeter rofi kitty
+pacman -S --noconfirm xorg-server xorg-xinit i3-wm lightdm lightdm-gtk-greeter rofi kitty locate feh polybar firefox
+
+updatedb
 systemctl enable lightdm
 "
 
