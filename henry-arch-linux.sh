@@ -107,7 +107,7 @@ echo "  - Max 253 characters total, and 63 per segment."
 echo
 while true; do
     read -rp "Insert the desired hostname: " HOSTNAME
-    if [[ ! "$HOSTNAME" =~ ^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9]))*$ ]] || [[ ${#HOSTNAME} -gt 253 ]]; then
+    if [[ ! "$HOSTNAME" =~ ^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*$ ]] || [[ ${#HOSTNAME} -gt 253 ]]; then
         echo "[ERROR] Invalid hostname. Try again."
         continue
     fi
