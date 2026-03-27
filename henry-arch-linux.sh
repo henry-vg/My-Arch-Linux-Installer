@@ -292,7 +292,32 @@ systemctl enable lightdm
 echo "[OK] Graphical environment installed."
 
 # --------------------------------
-pause "[12/13] Finalizing installation"
+pause "[13/15] Configuring graphical environment"
+# --------------------------------
+
+install -d -m 755 "/mnt/home/$USERNAME/.config" "/mnt/home/$USERNAME/Pictures"
+cp -a "$SCRIPT_DIR/dotfiles/.config/." "/mnt/home/$USERNAME/.config/"
+install -d -m 755 "/mnt/home/$USERNAME/.henry-bashes"
+cp -a "$SCRIPT_DIR/dotfiles/.henry-bashes/." "/mnt/home/$USERNAME/.henry-bashes/"
+install -Dm644 "$SCRIPT_DIR/arch-linux-wallpaper.jpg" "/mnt/home/$USERNAME/Pictures/arch-linux-wallpaper.jpg"
+chmod +x "/mnt/home/$USERNAME/.henry-bashes/set-wallpaper.sh"
+
+arch-chroot /mnt /bin/bash -c "
+chown -R $USERNAME:users /home/$USERNAME/.config /home/$USERNAME/.henry-bashes /home/$USERNAME/Pictures
+"
+
+echo "[OK] Graphical environment configured."
+
+# --------------------------------
+pause "[14/15] Installing general programs"
+# --------------------------------
+
+arch-chroot /mnt /bin/bash -c "
+pacman -S --noconfirm firefox locate
+updatedb
+"
+
+echo "[OK] General programs installed."
 # --------------------------------
 
 echo "Unmounting and rebooting..."
