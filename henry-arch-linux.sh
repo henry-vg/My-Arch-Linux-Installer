@@ -18,6 +18,13 @@ pause() {
     echo
 }
 
+partition_path() {
+    case "$1" in
+        *nvme*|*mmcblk*|*loop*) printf '%sp%s\n' "$1" "$2" ;;
+        *) printf '%s%s\n' "$1" "$2" ;;
+    esac
+}
+
 if [ ! -d /sys/firmware/efi ]; then
     echo "[ERROR] System not booted in UEFI mode. GRUB install will fail."
     exit 1
@@ -159,17 +166,22 @@ echo "[OK] ${FREE_LEFT} GiB will be allocated to /home."
 pause "[5/13] Disk partitioning"
 # --------------------------------
 
-ROOT_END=$((512/1024 + ROOT_SIZE))
-SWAP_END=$((ROOT_END + SWAP_SIZE))
+EFI_PART=$(partition_path "$DISK" 1)
+ROOT_PART=$(partition_path "$DISK" 2)
+SWAP_PART=$(partition_path "$DISK" 3)
+HOME_PART=$(partition_path "$DISK" 4)
+
+ROOT_END_MIB=$((EFI_END_MIB + ROOT_SIZE_MIB))
+SWAP_END_MIB=$((ROOT_END_MIB + SWAP_SIZE_MIB))
 
 umount -R "$DISK"* 2>/dev/null || true
 wipefs --all "$DISK"
 parted -s "$DISK" mklabel gpt
 parted -s "$DISK" mkpart ESP fat32 1MiB 513MiB
 parted -s "$DISK" set 1 esp on
-parted -s "$DISK" mkpart primary ext4 513MiB ${ROOT_END}GiB
-parted -s "$DISK" mkpart primary linux-swap ${ROOT_END}GiB ${SWAP_END}GiB
-parted -s "$DISK" mkpart primary ext4 ${SWAP_END}GiB 100%
+parted -s "$DISK" mkpart primary ext4 513MiB ${ROOT_END_MIB}MiB
+parted -s "$DISK" mkpart primary linux-swap ${ROOT_END_MIB}MiB ${SWAP_END_MIB}MiB
+parted -s "$DISK" mkpart primary ext4 ${SWAP_END_MIB}MiB 100%
 
 echo "[OK] Disk partitioned."
 
