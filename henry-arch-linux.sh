@@ -241,21 +241,22 @@ arch-chroot /mnt /bin/bash -c "
 pacman -Syu --noconfirm
 ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
 hwclock --systohc
-echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen
-echo 'pt_BR.UTF-8 UTF-8' >> /etc/locale.gen
+grep -qxF 'en_US.UTF-8 UTF-8' /etc/locale.gen || echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen
+grep -qxF 'pt_BR.UTF-8 UTF-8' /etc/locale.gen || echo 'pt_BR.UTF-8 UTF-8' >> /etc/locale.gen
 locale-gen
 echo 'LANG=en_US.UTF-8' > /etc/locale.conf
 echo 'KEYMAP=br-abnt2' > /etc/vconsole.conf
 echo '$HOSTNAME' > /etc/hostname
-cat <<EOT >> /etc/hosts
+cat <<EOT > /etc/hosts
 127.0.0.1   localhost.localdomain localhost
 ::1         localhost.localdomain localhost
 127.0.1.1   $HOSTNAME.localdomain $HOSTNAME
 EOT
 echo 'root:$ROOT_PASSWORD' | chpasswd
-useradd -m -g users -G wheel $USERNAME
+id -u '$USERNAME' >/dev/null 2>&1 || useradd -m -g users -G wheel '$USERNAME'
 echo '$USERNAME:$USER_PASSWORD' | chpasswd
-echo '$USERNAME ALL=(ALL) ALL' | EDITOR='tee -a' visudo
+printf '%s ALL=(ALL) ALL\n' '$USERNAME' > '/etc/sudoers.d/10-$USERNAME'
+chmod 440 '/etc/sudoers.d/10-$USERNAME'
 systemctl enable NetworkManager
 reflector --verbose --country Brazil --latest 10 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 "
