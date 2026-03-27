@@ -138,7 +138,10 @@ pause "[4/13] Disk sizing"
 # --------------------------------
 
 DISK_SIZE_BYTES=$(lsblk -b -dn -o SIZE "$DISK")
-DISK_SIZE_GIB=$((DISK_SIZE_BYTES / 1024 / 1024 / 1024 - 1))
+DISK_SIZE_MIB=$((DISK_SIZE_BYTES / 1024 / 1024))
+DISK_SIZE_GIB=$((DISK_SIZE_MIB / 1024))
+EFI_SIZE_MIB=512
+EFI_END_MIB=513
 
 while true; do
     echo "Disk size is approximately ${DISK_SIZE_GIB} GiB."
@@ -150,13 +153,17 @@ while true; do
         continue
     fi
 
-    TOTAL=$((512/1024 + ROOT_SIZE + SWAP_SIZE))
-    if (( TOTAL >= DISK_SIZE_GIB )); then
+    ROOT_SIZE_MIB=$((ROOT_SIZE * 1024))
+    SWAP_SIZE_MIB=$((SWAP_SIZE * 1024))
+    TOTAL_MIB=$((EFI_SIZE_MIB + ROOT_SIZE_MIB + SWAP_SIZE_MIB))
+    FREE_LEFT_MIB=$((DISK_SIZE_MIB - TOTAL_MIB))
+
+    if (( FREE_LEFT_MIB < 1024 )); then
         echo "[ERROR] Not enough space. Adjust partition sizes."
         continue
     fi
 
-    FREE_LEFT=$((DISK_SIZE_GIB - TOTAL))
+    FREE_LEFT=$((FREE_LEFT_MIB / 1024))
     break
 done
 
