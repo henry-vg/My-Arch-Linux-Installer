@@ -1,0 +1,27 @@
+set $mod Mod4
+font pango:monospace 10
+
+# Examples: spacing between windows
+#gaps inner 12
+#gaps outer 6
+
+gaps inner 12
+gaps outer 6
+
+# Examples: borders
+#default_border normal
+#default_border pixel 2
+
+default_border pixel 2
+default_floating_border pixel 2
+
+# Autostart (compositor, bar, wallpaper)
+exec --no-startup-id ~/.henry-bashes/set-wallpaper.sh
+exec --no-startup-id picom --config ~/.config/picom/picom.conf
+exec --no-startup-id polybar main
+
+# Examples: basic keybinds
+bindsym $mod+Return exec kitty
+bindsym $mod+d exec rofi -show drun
+bindsym $mod+Shift+q kill
+bindsym $mod+Shift+r restart
