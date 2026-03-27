@@ -30,13 +30,13 @@ if [ ! -d /sys/firmware/efi ]; then
     exit 1
 fi
 
-echo "[1/13] Internet connection check"
+echo "[1/15] Internet connection check"
 ping -c 4 8.8.8.8 > /dev/null 2>&1 || { echo "[ERROR] No internet connection. Exiting..."; exit 1; }
 
 echo "[OK] Connected."
 
 # --------------------------------
-pause "[2/13] Initial configuration"
+pause "[2/15] Initial configuration"
 # --------------------------------
 
 echo "Password Rules:"
@@ -116,7 +116,7 @@ done
 echo "[OK] Hostname set successfully."
 
 # --------------------------------
-pause "[3/13] Disk selection"
+pause "[3/15] Disk selection"
 # --------------------------------
 
 echo "Available disks:"
@@ -134,7 +134,7 @@ done
 echo "A 512 MiB EFI (boot) partition will be created automatically."
 
 # --------------------------------
-pause "[4/13] Disk sizing"
+pause "[4/15] Disk sizing"
 # --------------------------------
 
 DISK_SIZE_BYTES=$(lsblk -b -dn -o SIZE "$DISK")
@@ -170,7 +170,7 @@ done
 echo "[OK] ${FREE_LEFT} GiB will be allocated to /home."
 
 # --------------------------------
-pause "[5/13] Disk partitioning"
+pause "[5/15] Disk partitioning"
 # --------------------------------
 
 EFI_PART=$(partition_path "$DISK" 1)
@@ -193,32 +193,32 @@ parted -s "$DISK" mkpart primary ext4 ${SWAP_END_MIB}MiB 100%
 echo "[OK] Disk partitioned."
 
 # --------------------------------
-pause "[6/13] Formatting partitions"
+pause "[6/15] Formatting partitions"
 # --------------------------------
 
-mkfs.fat -F32 "${DISK}1"
-mkfs.ext4 "${DISK}2"
-swapoff "$DISK"3 2>/dev/null || true
-mkswap "${DISK}3"
-mkfs.ext4 "${DISK}4"
+mkfs.fat -F32 "$EFI_PART"
+mkfs.ext4 "$ROOT_PART"
+swapoff "$SWAP_PART" 2>/dev/null || true
+mkswap "$SWAP_PART"
+mkfs.ext4 "$HOME_PART"
 
 echo "[OK] Partitions formatted."
 
 # --------------------------------
-pause "[7/13] Mounting partitions"
+pause "[7/15] Mounting partitions"
 # --------------------------------
 
-mount "${DISK}2" /mnt
+mount "$ROOT_PART" /mnt
 mkdir -p /mnt/boot/efi
-mount "${DISK}1" /mnt/boot/efi
+mount "$EFI_PART" /mnt/boot/efi
 mkdir -p /mnt/home
-mount "${DISK}4" /mnt/home
-swapon "${DISK}3"
+mount "$HOME_PART" /mnt/home
+swapon "$SWAP_PART"
 
 echo "[OK] Partitions mounted."
 
 # --------------------------------
-pause "[8/13] Installing base system"
+pause "[8/15] Installing base system"
 # --------------------------------
 
 pacstrap /mnt base linux linux-firmware networkmanager sudo reflector
@@ -226,15 +226,15 @@ pacstrap /mnt base linux linux-firmware networkmanager sudo reflector
 echo "[OK] Base system installed."
 
 # --------------------------------
-pause "[9/13] Generating fstab"
+pause "[9/15] Generating fstab"
 # --------------------------------
 
-genfstab -U /mnt >> /mnt/etc/fstab
+genfstab -U /mnt > /mnt/etc/fstab
 
 echo "[OK] fstab generated."
 
 # --------------------------------
-pause "[10/13] System configuration"
+pause "[10/15] System configuration"
 # --------------------------------
 
 arch-chroot /mnt /bin/bash -c "
@@ -266,26 +266,24 @@ unset ROOT_PASSWORD ROOT_PASSWORD_CONFIRM USER_PASSWORD USER_PASSWORD_CONFIRM
 echo "[OK] System configured."
 
 # --------------------------------
-pause "[11/13] Installing bootloader"
+pause "[11/15] Installing bootloader"
 # --------------------------------
 
 arch-chroot /mnt /bin/bash -c "
 pacman -S grub efibootmgr os-prober --noconfirm
 grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
-echo 'GRUB_DISABLE_OS_PROBER=false' >> /etc/default/grub
+grep -qxF 'GRUB_DISABLE_OS_PROBER=false' /etc/default/grub || echo 'GRUB_DISABLE_OS_PROBER=false' >> /etc/default/grub
 grub-mkconfig -o /boot/grub/grub.cfg
 "
 
 echo "[OK] Bootloader installed."
 
 # --------------------------------
-pause "[12/13] Installing graphical environment"
+pause "[12/15] Installing graphical environment"
 # --------------------------------
 
 arch-chroot /mnt /bin/bash -c "
-pacman -S --noconfirm xorg-server xorg-xinit i3-wm lightdm lightdm-gtk-greeter rofi kitty locate feh polybar firefox
-
-updatedb
+pacman -S --noconfirm xorg-server xorg-xinit i3-wm lightdm lightdm-gtk-greeter rofi kitty feh polybar picom
 systemctl enable lightdm
 "
 
@@ -318,6 +316,9 @@ updatedb
 "
 
 echo "[OK] General programs installed."
+
+# --------------------------------
+pause "[15/15] Finalizing installation"
 # --------------------------------
 
 echo "Unmounting and rebooting..."
