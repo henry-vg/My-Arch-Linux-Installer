@@ -2,6 +2,13 @@
 
 set -e
 
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+
+if [ "$EUID" -ne 0 ]; then
+    echo "[ERROR] This script must be run as root."
+    exit 1
+fi
+
 pause() {
     echo
     if [ -n "$1" ]; then
