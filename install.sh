@@ -2,6 +2,8 @@
 
 set -e
 
+trap '' INT
+
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 
 if [ "$EUID" -ne 0 ]; then
@@ -14,7 +16,7 @@ pause() {
     if [ -n "$1" ]; then
         echo "$1"
     fi
-    read -rp "Press Enter to continue or Ctrl+C to abort..."
+    read -rp "Press Enter to continue..."
     echo
 }
 
