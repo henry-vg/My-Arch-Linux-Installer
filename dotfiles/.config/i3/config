@@ -1,27 +1,137 @@
-set $mod Mod4
-font pango:monospace 10
+# --- VARIABLES --- #
 
-# Examples: spacing between windows
-#gaps inner 12
-#gaps outer 6
+set $mod Mod4
+set $terminal kitty
+set $browser firefox
+set $menu rofi -show drun
+set $locker i3lock
+set $wallpaper ~/documents/pictures/wallpapers/arch-linux-wallpaper.jpg
+
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+set $ws10 "10"
+
+
+# --- STARTUP --- #
+
+exec --no-startup-id dex --autostart --environment i3
+
+exec_always --no-startup-id feh --bg-fill $wallpaper
+exec --no-startup-id picom --config ~/.config/picom/config
+exec --no-startup-id polybar main
+exec --no-startup-id setxkbmap -layout br -variant abnt2
+
+
+# --- APPEARANCE --- #
+
+font pango:monospace 10
 
 gaps inner 12
 gaps outer 6
 
-# Examples: borders
-#default_border normal
-#default_border pixel 2
-
 default_border pixel 2
-default_floating_border pixel 2
+default_floating_border normal
 
-# Autostart (compositor, bar, wallpaper)
-exec --no-startup-id ~/.henry-bashes/set-wallpaper.sh
-exec --no-startup-id picom --config ~/.config/picom/picom.conf
-exec --no-startup-id polybar main
+# client.<state> <border> <background> <text> <indicator> <child_border>
+client.focused          #a5a5a5 #858585 #1a1a1a #a5a5a5 #a5a5a5
+client.focused_inactive #858585 #858585 #303030 #a5a5a5 #858585
+client.unfocused        #555555 #555555 #303030 #a5a5a5 #555555
+client.urgent           #dc7887 #dc7887 #1a1a1a #a5a5a5 #dc7887
+client.placeholder      #1f2335 #1f2335 #a9b1d6 #1f2335 #1f2335
+client.background       #060606
 
-# Examples: basic keybinds
-bindsym $mod+Return exec kitty
-bindsym $mod+d exec rofi -show drun
+
+# --- BEHAVIOR --- #
+
+floating_modifier $mod
+focus_follows_mouse no
+workspace_auto_back_and_forth yes
+tiling_drag modifier titlebar
+
+
+# --- KEYBINDINGS --- #
+
+# LAUNCHERS
+bindsym $mod+Return exec $terminal
+bindsym $mod+d exec $menu
+bindsym $mod+b exec $browser
+bindsym $mod+l exec $locker
+
+# FOCUS
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+bindsym $mod+space focus mode_toggle
+
+# MOVE
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+bindsym $mod+Shift+1 move container to workspace number $ws1
+bindsym $mod+Shift+2 move container to workspace number $ws2
+bindsym $mod+Shift+3 move container to workspace number $ws3
+bindsym $mod+Shift+4 move container to workspace number $ws4
+bindsym $mod+Shift+5 move container to workspace number $ws5
+bindsym $mod+Shift+6 move container to workspace number $ws6
+bindsym $mod+Shift+7 move container to workspace number $ws7
+bindsym $mod+Shift+8 move container to workspace number $ws8
+bindsym $mod+Shift+9 move container to workspace number $ws9
+bindsym $mod+Shift+0 move container to workspace number $ws10
+
+# LAYOUT
+bindsym $mod+h split h
+bindsym $mod+v split v
+
+bindsym $mod+f fullscreen toggle
+
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+
+bindsym $mod+Shift+space floating toggle
+
+# WORKSPACES
+bindsym $mod+1 workspace number $ws1
+bindsym $mod+2 workspace number $ws2
+bindsym $mod+3 workspace number $ws3
+bindsym $mod+4 workspace number $ws4
+bindsym $mod+5 workspace number $ws5
+bindsym $mod+6 workspace number $ws6
+bindsym $mod+7 workspace number $ws7
+bindsym $mod+8 workspace number $ws8
+bindsym $mod+9 workspace number $ws9
+bindsym $mod+0 workspace number $ws10
+
+# SYSTEM
 bindsym $mod+Shift+q kill
+bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+
+# MODES
+bindsym $mod+r mode "resize"
+mode "resize" {
+    bindsym Left resize shrink width 10 px or 10 ppt
+    bindsym Down resize grow height 10 px or 10 ppt
+    bindsym Up resize shrink height 10 px or 10 ppt
+    bindsym Right resize grow width 10 px or 10 ppt
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+r mode "default"
+}
+
+
+# --- RULES --- #
+# ...
