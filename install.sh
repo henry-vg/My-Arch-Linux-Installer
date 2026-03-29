@@ -295,15 +295,14 @@ echo "[OK] Graphical environment installed."
 pause "[13/15] Configuring graphical environment"
 # --------------------------------
 
-install -d -m 755 "/mnt/home/$USERNAME/.config" "/mnt/home/$USERNAME/Pictures"
+install -d -m 755 "/mnt/home/$USERNAME/.config/"
 cp -a "$SCRIPT_DIR/dotfiles/.config/." "/mnt/home/$USERNAME/.config/"
-install -d -m 755 "/mnt/home/$USERNAME/.henry-bashes"
-cp -a "$SCRIPT_DIR/dotfiles/.henry-bashes/." "/mnt/home/$USERNAME/.henry-bashes/"
-install -Dm644 "$SCRIPT_DIR/arch-linux-wallpaper.jpg" "/mnt/home/$USERNAME/Pictures/arch-linux-wallpaper.jpg"
-chmod +x "/mnt/home/$USERNAME/.henry-bashes/set-wallpaper.sh"
+
+install -d -m 755 "/mnt/home/$USERNAME/documents/pictures/"
+install -m 644 "$SCRIPT_DIR/arch-linux-wallpaper.jpg" "/mnt/home/$USERNAME/documents/pictures/"
 
 arch-chroot /mnt /bin/bash -c "
-chown -R $USERNAME:users /home/$USERNAME/.config /home/$USERNAME/.henry-bashes /home/$USERNAME/Pictures
+chown -R $USERNAME:users /home/$USERNAME/.config /home/$USERNAME/documents
 "
 
 echo "[OK] Graphical environment configured."
