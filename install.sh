@@ -32,13 +32,13 @@ if [ ! -d /sys/firmware/efi ]; then
     exit 1
 fi
 
-echo "[1/15] Internet connection check"
+echo "[1/16] Internet connection check"
 ping -c 4 8.8.8.8 > /dev/null 2>&1 || { echo "[ERROR] No internet connection. Exiting..."; exit 1; }
 
 echo "[OK] Connected."
 
 # --------------------------------
-pause "[2/15] Initial configuration"
+pause "[2/16] Initial configuration"
 # --------------------------------
 
 echo "Password Rules:"
@@ -118,7 +118,7 @@ done
 echo "[OK] Hostname set successfully."
 
 # --------------------------------
-pause "[3/15] Disk selection"
+pause "[3/16] Disk selection"
 # --------------------------------
 
 echo "Available disks:"
@@ -136,7 +136,7 @@ done
 echo "A 512 MiB EFI (boot) partition will be created automatically."
 
 # --------------------------------
-pause "[4/15] Disk sizing"
+pause "[4/16] Disk sizing"
 # --------------------------------
 
 DISK_SIZE_BYTES=$(lsblk -b -dn -o SIZE "$DISK")
@@ -172,7 +172,7 @@ done
 echo "[OK] ${FREE_LEFT} GiB will be allocated to /home."
 
 # --------------------------------
-pause "[5/15] Disk partitioning"
+pause "[5/16] Disk partitioning"
 # --------------------------------
 
 EFI_PART=$(partition_path "$DISK" 1)
@@ -195,7 +195,7 @@ parted -s "$DISK" mkpart primary ext4 ${SWAP_END_MIB}MiB 100%
 echo "[OK] Disk partitioned."
 
 # --------------------------------
-pause "[6/15] Formatting partitions"
+pause "[6/16] Formatting partitions"
 # --------------------------------
 
 mkfs.fat -F32 "$EFI_PART"
@@ -207,7 +207,7 @@ mkfs.ext4 "$HOME_PART"
 echo "[OK] Partitions formatted."
 
 # --------------------------------
-pause "[7/15] Mounting partitions"
+pause "[7/16] Mounting partitions"
 # --------------------------------
 
 mount "$ROOT_PART" /mnt
@@ -220,7 +220,7 @@ swapon "$SWAP_PART"
 echo "[OK] Partitions mounted."
 
 # --------------------------------
-pause "[8/15] Installing base system"
+pause "[8/16] Installing base system"
 # --------------------------------
 
 pacstrap /mnt base linux linux-firmware networkmanager sudo reflector
@@ -228,7 +228,7 @@ pacstrap /mnt base linux linux-firmware networkmanager sudo reflector
 echo "[OK] Base system installed."
 
 # --------------------------------
-pause "[9/15] Generating fstab"
+pause "[9/16] Generating fstab"
 # --------------------------------
 
 genfstab -U /mnt > /mnt/etc/fstab
@@ -236,7 +236,7 @@ genfstab -U /mnt > /mnt/etc/fstab
 echo "[OK] fstab generated."
 
 # --------------------------------
-pause "[10/15] System configuration"
+pause "[10/16] System configuration"
 # --------------------------------
 
 arch-chroot /mnt /bin/bash -c "
@@ -268,7 +268,7 @@ unset ROOT_PASSWORD ROOT_PASSWORD_CONFIRM USER_PASSWORD USER_PASSWORD_CONFIRM
 echo "[OK] System configured."
 
 # --------------------------------
-pause "[11/15] Installing bootloader"
+pause "[11/16] Installing bootloader"
 # --------------------------------
 
 arch-chroot /mnt /bin/bash -c "
@@ -281,7 +281,7 @@ grub-mkconfig -o /boot/grub/grub.cfg
 echo "[OK] Bootloader installed."
 
 # --------------------------------
-pause "[12/15] Installing graphical environment"
+pause "[12/16] Installing graphical environment"
 # --------------------------------
 
 arch-chroot /mnt /bin/bash -c "
@@ -292,14 +292,31 @@ systemctl enable lightdm
 echo "[OK] Graphical environment installed."
 
 # --------------------------------
-pause "[13/15] Configuring graphical environment"
+pause "[13/16] Installing cursor theme"
+# --------------------------------
+
+CURSOR_THEME="henry-cursors-high-contrast"
+
+install -d -m 755 "/mnt/usr/share/icons"
+cp -a "$SCRIPT_DIR/$CURSOR_THEME" "/mnt/usr/share/icons/$CURSOR_THEME"
+
+install -d -m 755 "/mnt/usr/share/icons/default"
+cat > "/mnt/usr/share/icons/default/index.theme" <<EOF
+[Icon Theme]
+Inherits=$CURSOR_THEME
+EOF
+
+echo "[OK] Cursor theme installed."
+
+# --------------------------------
+pause "[14/16] Configuring graphical environment"
 # --------------------------------
 
 install -d -m 755 "/mnt/home/$USERNAME/.config/"
 cp -a "$SCRIPT_DIR/dotfiles/.config/." "/mnt/home/$USERNAME/.config/"
 
-install -d -m 755 "/mnt/home/$USERNAME/documents/pictures/"
-install -m 644 "$SCRIPT_DIR/arch-linux-wallpaper.jpg" "/mnt/home/$USERNAME/documents/pictures/"
+install -d -m 755 "/mnt/home/$USERNAME/documents/pictures/wallpapers"
+install -m 644 "$SCRIPT_DIR/arch-linux-wallpaper.jpg" "/mnt/home/$USERNAME/documents/pictures/wallpapers"
 
 arch-chroot /mnt /bin/bash -c "
 chown -R $USERNAME:users /home/$USERNAME/.config /home/$USERNAME/documents
@@ -308,7 +325,7 @@ chown -R $USERNAME:users /home/$USERNAME/.config /home/$USERNAME/documents
 echo "[OK] Graphical environment configured."
 
 # --------------------------------
-pause "[14/15] Installing general programs"
+pause "[15/16] Installing general programs"
 # --------------------------------
 
 arch-chroot /mnt /bin/bash -c "
@@ -319,7 +336,7 @@ updatedb
 echo "[OK] General programs installed."
 
 # --------------------------------
-pause "[15/15] Finalizing installation"
+pause "[16/16] Finalizing installation"
 # --------------------------------
 
 echo "Unmounting and rebooting..."
