@@ -1,15 +1,29 @@
 [bar/main]
 width = 100%
-height = 28
-radius = 8
-background = #cc1e1e2e
-foreground = #f5f5f5
-modules-left = xworkspaces
-modules-center = xwindow
+height = 32
+radius = 0
+font-0 = pango:monospace:size=10;1
+background = #060606
+foreground = #a5a5a5
+padding-left = 2
+padding-right = 2
+border-bottom-size = 1
+border-bottom-color = #a5a5a5
+modules-left = workspaces
+modules-center = window
 modules-right = date
 
 [module/date]
 type = internal/date
 interval = 1
-date = %Y-%m-%d %H:%M
-label = %date%
+date = %Y-%m-%d
+time = %H:%M
+label = %date% | %time%
+
+[module/workspaces]
+type = internal/xworkspaces
+pin-workspaces = true
+group-by-monitor = false
+enable-click = true
+enable-scroll = true
+reverse-scroll = false

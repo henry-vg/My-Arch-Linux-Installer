@@ -25,7 +25,7 @@ exec --no-startup-id dex --autostart --environment i3
 
 exec_always --no-startup-id feh --bg-fill $wallpaper
 exec --no-startup-id picom --config ~/.config/picom/config
-exec --no-startup-id polybar main
+exec --no-startup-id $HOME/.config/polybar/launch.sh
 exec --no-startup-id setxkbmap -layout br -variant abnt2
 
 
