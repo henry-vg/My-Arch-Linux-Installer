@@ -1,0 +1,43 @@
+configuration {
+  show-icons: false;
+}
+
+* {
+  font: "JetBrainsMono Nerd Font 11";
+}
+
+window {
+  location: north west;
+  anchor: north west;
+  x-offset: 12px;
+  y-offset: 34px;
+  width: 220px;
+  border: 2px;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+mainbox {
+  children: [ listview ];
+}
+
+listview {
+  lines: 3;
+  columns: 1;
+  fixed-height: false;
+  dynamic: true;
+  spacing: 4px;
+}
+
+element {
+  padding: 8px;
+  border-radius: 6px;
+}
+
+element selected {
+  background-color: #3a3f4b;
+}
+
+element-text {
+  vertical-align: 0.5;
+}

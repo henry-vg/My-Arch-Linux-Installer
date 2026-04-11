@@ -1,0 +1,49 @@
+configuration {
+  show-icons: true;
+}
+
+* {
+  font: "JetBrainsMono Nerd Font 11";
+}
+
+window {
+  location: north west;
+  anchor: north west;
+  x-offset: 240px;
+  y-offset: 34px;
+  width: 420px;
+  border: 2px;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+mainbox {
+  children: [ listview ];
+}
+
+listview {
+  lines: 1;
+  columns: 5;
+  fixed-height: true;
+  dynamic: false;
+  spacing: 8px;
+}
+
+element {
+  orientation: vertical;
+  children: [ element-icon, element-text ];
+  padding: 8px;
+  border-radius: 6px;
+}
+
+element selected {
+  background-color: #3a3f4b;
+}
+
+element-icon {
+  size: 40px;
+}
+
+element-text {
+  horizontal-align: 0.5;
+}
