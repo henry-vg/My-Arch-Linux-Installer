@@ -25,7 +25,7 @@ exec --no-startup-id dex --autostart --environment i3
 
 exec_always --no-startup-id feh --bg-fill $wallpaper
 exec --no-startup-id picom --config ~/.config/picom/config
-exec --no-startup-id $HOME/.config/polybar/launch.sh
+exec --no-startup-id $HOME/.config/polybar/bashes/launch.sh
 exec --no-startup-id setxkbmap -layout br -variant abnt2
 
 
@@ -33,10 +33,10 @@ exec --no-startup-id setxkbmap -layout br -variant abnt2
 
 font pango:monospace 10
 
-gaps inner 12
-gaps outer 6
+gaps inner 5
+gaps outer 0
 
-default_border pixel 2
+default_border pixel 1
 default_floating_border normal
 
 # client.<state> <border> <background> <text> <indicator> <child_border>

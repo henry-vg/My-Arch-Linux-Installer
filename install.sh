@@ -285,7 +285,7 @@ pause "[12/16] Installing graphical environment"
 # --------------------------------
 
 arch-chroot /mnt /bin/bash -c "
-pacman -S --noconfirm xorg-server xorg-xinit i3-wm lightdm lightdm-gtk-greeter rofi kitty feh polybar picom
+pacman -S --noconfirm xorg-server xorg-xinit i3-wm lightdm lightdm-gtk-greeter rofi kitty feh polybar
 systemctl enable lightdm
 "
 
@@ -314,6 +314,8 @@ pause "[14/16] Configuring graphical environment"
 
 install -d -m 755 "/mnt/home/$USERNAME/.config/"
 cp -a "$SCRIPT_DIR/dotfiles/.config/." "/mnt/home/$USERNAME/.config/"
+
+chmod +x "$SCRIPT_DIR/dotfiles/.config/polybar/*.sh"
 
 install -d -m 755 "/mnt/home/$USERNAME/documents/pictures/wallpapers"
 install -m 644 "$SCRIPT_DIR/arch-linux-wallpaper.jpg" "/mnt/home/$USERNAME/documents/pictures/wallpapers"
