@@ -6,11 +6,11 @@ trap '' INT
 
 readonly PROJECT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
-source "$PROJECT_DIR/scripts/common.sh"
-source "$PROJECT_DIR/scripts/configuration.sh"
-source "$PROJECT_DIR/scripts/disk.sh"
-source "$PROJECT_DIR/scripts/system.sh"
-source "$PROJECT_DIR/scripts/desktop.sh"
+source "$PROJECT_DIR/src/common.sh"
+source "$PROJECT_DIR/src/configuration.sh"
+source "$PROJECT_DIR/src/disk.sh"
+source "$PROJECT_DIR/src/system.sh"
+source "$PROJECT_DIR/src/desktop.sh"
 
 main() {
     require_root
