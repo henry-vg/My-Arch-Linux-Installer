@@ -26,7 +26,7 @@ configure_graphical_environment() {
 
     install -d -m 755 "$user_home/.config"
     cp -a "$PROJECT_DIR/dotfiles/.config/." "$user_home/.config/"
-    chmod +x "$user_home/.config/polybar/bashes/"*.sh
+    chmod +x "$user_home/.config/polybar/launch.sh"
 
     install -d -m 755 "$user_home/documents/pictures/wallpapers"
     install -m 644 "$PROJECT_DIR/arch-linux-wallpaper.jpg" "$user_home/documents/pictures/wallpapers"
