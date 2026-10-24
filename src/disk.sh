@@ -8,20 +8,20 @@ partition_path() {
 select_disk() {
     local -n selected_disk=$1
 
-    echo "Available disks:"
+    log "Available disks:"
     lsblk -d -n -p -o NAME,SIZE,TYPE
 
     while true; do
-        read -rp "Enter the disk name (e.g., /dev/sda): " selected_disk
+        read -rp "$(input_prompt 'Enter the disk name (e.g., /dev/sda): ')" selected_disk
         if [[ $(lsblk -d -n -o TYPE "$selected_disk" 2>/dev/null) != disk ]]; then
-            echo "[ERROR] Invalid disk. Try again."
+            log "[ERROR] Invalid disk. Try again."
             continue
         fi
         break
     done
 
-    echo "[OK] Selected disk: $selected_disk"
-    echo "A 512 MiB EFI (boot) partition will be created automatically."
+    log "[OK] Selected disk: $selected_disk"
+    log "A 512 MiB EFI (boot) partition will be created automatically."
 }
 
 select_partition_sizes() {
@@ -34,17 +34,17 @@ select_partition_sizes() {
     disk_size_gib=$((disk_size_mib / 1024))
 
     while true; do
-        echo "Disk size is approximately ${disk_size_gib} GiB."
-        read -rp "Size (GiB) for root (/) partition: " root_size
-        read -rp "Size (GiB) for swap partition: " swap_size
+        log "Disk size is approximately ${disk_size_gib} GiB."
+        read -rp "$(input_prompt 'Size (GiB) for root (/) partition: ')" root_size
+        read -rp "$(input_prompt 'Size (GiB) for swap partition: ')" swap_size
 
         if [[ ! "$root_size" =~ ^[1-9][0-9]*$ || ! "$swap_size" =~ ^[1-9][0-9]*$ ]]; then
-            echo "[ERROR] Sizes must be positive integers."
+            log "[ERROR] Sizes must be positive integers."
             continue
         fi
 
         if (( ${#root_size} > ${#disk_size_gib} || ${#swap_size} > ${#disk_size_gib} )); then
-            echo "[ERROR] Not enough space. Adjust partition sizes."
+            log "[ERROR] Not enough space. Adjust partition sizes."
             continue
         fi
 
@@ -53,13 +53,13 @@ select_partition_sizes() {
         free_space_mib=$((disk_size_mib - 512 - root_size_mib_output - swap_size_mib_output))
 
         if (( free_space_mib < 1024 )); then
-            echo "[ERROR] Not enough space. Adjust partition sizes."
+            log "[ERROR] Not enough space. Adjust partition sizes."
             continue
         fi
         break
     done
 
-    echo "[OK] $((free_space_mib / 1024)) GiB will be allocated to /home."
+    log "[OK] $((free_space_mib / 1024)) GiB will be allocated to /home."
 }
 
 partition_disk() {
@@ -93,12 +93,12 @@ partition_disk() {
 
     for partition_number in {1..4}; do
         if [[ ! -b $(partition_path "$disk" "$partition_number") ]]; then
-            echo "[ERROR] Partition $partition_number is not available."
+            log "[ERROR] Partition $partition_number is not available."
             return 1
         fi
     done
 
-    echo "[OK] Disk partitioned."
+    log "[OK] Disk partitioned."
 }
 
 format_partitions() {
@@ -108,7 +108,7 @@ format_partitions() {
     mkfs.ext4 "$root_partition"
     mkswap "$swap_partition"
     mkfs.ext4 "$home_partition"
-    echo "[OK] Partitions formatted."
+    log "[OK] Partitions formatted."
 }
 
 mount_partitions() {
@@ -119,5 +119,5 @@ mount_partitions() {
     mount "$efi_partition" /mnt/boot/efi
     mount "$home_partition" /mnt/home
     swapon "$swap_partition"
-    echo "[OK] Partitions mounted."
+    log "[OK] Partitions mounted."
 }

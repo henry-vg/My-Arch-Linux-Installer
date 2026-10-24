@@ -1,11 +1,11 @@
 install_base_system() {
     pacstrap /mnt base linux linux-firmware networkmanager sudo reflector
-    echo "[OK] Base system installed."
+    log "[OK] Base system installed."
 }
 
 generate_fstab() {
     genfstab -U /mnt > /mnt/etc/fstab
-    echo "[OK] fstab generated."
+    log "[OK] fstab generated."
 }
 
 configure_system() {
@@ -37,7 +37,7 @@ CHROOT
     printf 'root:%s\n' "$root_password" | arch-chroot /mnt chpasswd
     printf '%s:%s\n' "$username" "$user_password" | arch-chroot /mnt chpasswd
 
-    echo "[OK] System configured."
+    log "[OK] System configured."
 }
 
 install_bootloader() {
@@ -50,7 +50,7 @@ grep -qxF 'GRUB_DISABLE_OS_PROBER=false' /etc/default/grub || echo 'GRUB_DISABLE
 grub-mkconfig -o /boot/grub/grub.cfg
 CHROOT
 
-    echo "[OK] Bootloader installed."
+    log "[OK] Bootloader installed."
 }
 
 install_general_programs() {
@@ -61,16 +61,16 @@ pacman -S --noconfirm firefox locate
 updatedb
 CHROOT
 
-    echo "[OK] General programs installed."
+    log "[OK] General programs installed."
 }
 
 finalize_installation() {
-    echo "Unmounting and rebooting..."
+    log "Unmounting and rebooting..."
     umount -lR /mnt
     swapoff -a
 
     for seconds_remaining in {5..1}; do
-        echo "Rebooting in $seconds_remaining second(s)..."
+        log "Rebooting in $seconds_remaining second(s)..."
         sleep 1
     done
 

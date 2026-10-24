@@ -19,7 +19,7 @@ main() {
 
     if [[ -t 0 ]]; then
         terminal_settings=$(stty -g)
-        trap 'stty "$terminal_settings"' EXIT
+        trap 'reset_output; stty "$terminal_settings"' EXIT
         stty intr undef
     fi
 

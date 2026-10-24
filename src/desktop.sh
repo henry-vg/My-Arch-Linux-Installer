@@ -6,7 +6,7 @@ pacman -S --noconfirm xorg-server xorg-xinit i3-wm lightdm lightdm-gtk-greeter r
 systemctl enable lightdm
 CHROOT
 
-    echo "[OK] Graphical environment installed."
+    log "[OK] Graphical environment installed."
 }
 
 install_cursor_theme() {
@@ -18,7 +18,7 @@ install_cursor_theme() {
     install -d -m 755 /mnt/usr/share/icons/default
     printf '[Icon Theme]\nInherits=%s\n' "$cursor_theme" > /mnt/usr/share/icons/default/index.theme
 
-    echo "[OK] Cursor theme installed."
+    log "[OK] Cursor theme installed."
 }
 
 configure_graphical_environment() {
@@ -34,5 +34,5 @@ configure_graphical_environment() {
 
     arch-chroot /mnt chown -R "$username:users" "/home/$username/.config" "/home/$username/documents"
 
-    echo "[OK] Graphical environment configured."
+    log "[OK] Graphical environment configured."
 }
