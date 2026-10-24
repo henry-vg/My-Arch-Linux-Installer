@@ -9,7 +9,9 @@ generate_fstab() {
 }
 
 configure_system() {
-    arch-chroot /mnt /bin/bash -s -- "$HOSTNAME" "$USERNAME" <<'CHROOT'
+    local hostname=$1 username=$2 root_password=$3 user_password=$4
+
+    arch-chroot /mnt /bin/bash -s -- "$hostname" "$username" <<'CHROOT'
 set -e
 
 hostname="$1"
@@ -32,9 +34,8 @@ systemctl enable NetworkManager
 reflector --verbose --country Brazil --latest 10 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
 CHROOT
 
-    printf 'root:%s\n' "$ROOT_PASSWORD" | arch-chroot /mnt chpasswd
-    printf '%s:%s\n' "$USERNAME" "$USER_PASSWORD" | arch-chroot /mnt chpasswd
-    unset ROOT_PASSWORD USER_PASSWORD
+    printf 'root:%s\n' "$root_password" | arch-chroot /mnt chpasswd
+    printf '%s:%s\n' "$username" "$user_password" | arch-chroot /mnt chpasswd
 
     echo "[OK] System configured."
 }

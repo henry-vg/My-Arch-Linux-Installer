@@ -1,6 +1,10 @@
 pause() {
     printf '\n%s\n' "$1"
+    if [[ -t 0 ]]; then stty intr '^C'; fi
+    trap 'exit 130' INT
     read -rp "Press Enter to continue..."
+    trap '' INT
+    if [[ -t 0 ]]; then stty intr undef; fi
     echo
 }
 

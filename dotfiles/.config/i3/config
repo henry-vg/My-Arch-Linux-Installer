@@ -4,7 +4,6 @@ set $mod Mod4
 set $terminal kitty
 set $browser firefox
 set $menu rofi -show drun
-set $locker i3lock
 set $wallpaper ~/documents/pictures/wallpapers/arch-linux-wallpaper.jpg
 
 set $ws1 "1"
@@ -21,12 +20,8 @@ set $ws10 "10"
 
 # --- STARTUP --- #
 
-exec --no-startup-id dex --autostart --environment i3
-
 exec_always --no-startup-id feh --bg-fill $wallpaper
-exec --no-startup-id picom --config ~/.config/picom/config
 exec --no-startup-id $HOME/.config/polybar/launch.sh
-exec --no-startup-id setxkbmap -layout br -variant abnt2
 
 
 # --- APPEARANCE --- #
@@ -62,7 +57,6 @@ tiling_drag modifier titlebar
 bindsym $mod+Return exec $terminal
 bindsym $mod+d exec $menu
 bindsym $mod+b exec $browser
-bindsym $mod+l exec $locker
 
 # FOCUS
 bindsym $mod+Left focus left
@@ -131,7 +125,3 @@ mode "resize" {
     bindsym Escape mode "default"
     bindsym $mod+r mode "default"
 }
-
-
-# --- RULES --- #
-# ...

@@ -13,6 +13,16 @@ source "$PROJECT_DIR/src/system.sh"
 source "$PROJECT_DIR/src/desktop.sh"
 
 main() {
+    local hostname username root_password user_password disk
+    local root_size_mib swap_size_mib efi_partition root_partition swap_partition home_partition
+    local terminal_settings
+
+    if [[ -t 0 ]]; then
+        terminal_settings=$(stty -g)
+        trap 'stty "$terminal_settings"' EXIT
+        stty intr undef
+    fi
+
     require_root
     require_uefi
 
@@ -20,22 +30,27 @@ main() {
     check_internet_connection
 
     pause "[2/16] Initial configuration"
-    collect_system_configuration
+    collect_system_configuration hostname username root_password user_password
 
     pause "[3/16] Disk selection"
-    select_disk
+    select_disk disk
 
     pause "[4/16] Disk sizing"
-    select_partition_sizes
+    select_partition_sizes "$disk" root_size_mib swap_size_mib
 
     pause "[5/16] Disk partitioning"
-    partition_disk
+    partition_disk "$disk" "$root_size_mib" "$swap_size_mib"
+
+    efi_partition=$(partition_path "$disk" 1)
+    root_partition=$(partition_path "$disk" 2)
+    swap_partition=$(partition_path "$disk" 3)
+    home_partition=$(partition_path "$disk" 4)
 
     pause "[6/16] Formatting partitions"
-    format_partitions
+    format_partitions "$efi_partition" "$root_partition" "$swap_partition" "$home_partition"
 
     pause "[7/16] Mounting partitions"
-    mount_partitions
+    mount_partitions "$efi_partition" "$root_partition" "$swap_partition" "$home_partition"
 
     pause "[8/16] Installing base system"
     install_base_system
@@ -44,7 +59,8 @@ main() {
     generate_fstab
 
     pause "[10/16] System configuration"
-    configure_system
+    configure_system "$hostname" "$username" "$root_password" "$user_password"
+    unset root_password user_password
 
     pause "[11/16] Installing bootloader"
     install_bootloader
@@ -56,7 +72,7 @@ main() {
     install_cursor_theme
 
     pause "[14/16] Configuring graphical environment"
-    configure_graphical_environment
+    configure_graphical_environment "$username"
 
     pause "[15/16] Installing general programs"
     install_general_programs

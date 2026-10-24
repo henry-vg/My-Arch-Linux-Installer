@@ -22,7 +22,8 @@ install_cursor_theme() {
 }
 
 configure_graphical_environment() {
-    local user_home="/mnt/home/$USERNAME"
+    local username=$1
+    local user_home="/mnt/home/$username"
 
     install -d -m 755 "$user_home/.config"
     cp -a "$PROJECT_DIR/dotfiles/.config/." "$user_home/.config/"
@@ -31,7 +32,7 @@ configure_graphical_environment() {
     install -d -m 755 "$user_home/documents/pictures/wallpapers"
     install -m 644 "$PROJECT_DIR/arch-linux-wallpaper.jpg" "$user_home/documents/pictures/wallpapers"
 
-    arch-chroot /mnt chown -R "$USERNAME:users" "/home/$USERNAME/.config" "/home/$USERNAME/documents"
+    arch-chroot /mnt chown -R "$username:users" "/home/$username/.config" "/home/$username/documents"
 
     echo "[OK] Graphical environment configured."
 }

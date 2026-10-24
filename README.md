@@ -25,3 +25,5 @@ chmod +x ./main.sh
 ```
 
 Follow the prompts (disk, sizes, user, etc.).
+
+Press Ctrl+C at a step prompt to exit. It is disabled while a step runs.

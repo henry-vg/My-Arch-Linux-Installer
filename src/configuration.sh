@@ -24,7 +24,9 @@ read_password() {
 }
 
 collect_system_configuration() {
-    read_password "Insert root password: " ROOT_PASSWORD
+    local -n hostname_output=$1 username_output=$2
+
+    read_password "Insert root password: " "$3"
     echo "[OK] Root password set successfully."
     echo
 
@@ -36,8 +38,8 @@ collect_system_configuration() {
     echo
 
     while true; do
-        read -rp "Insert the desired username: " USERNAME
-        if [[ ! "$USERNAME" =~ ^[a-z][-a-z0-9_]{2,31}$ ]] || id "$USERNAME" &>/dev/null; then
+        read -rp "Insert the desired username: " username_output
+        if [[ ! "$username_output" =~ ^[a-z][-a-z0-9_]{2,31}$ ]] || id "$username_output" &>/dev/null; then
             echo "[ERROR] Invalid or existing username. Try again."
             continue
         fi
@@ -46,8 +48,8 @@ collect_system_configuration() {
     echo "[OK] Username set successfully."
     echo
 
-    read_password "Insert $USERNAME's password: " USER_PASSWORD
-    echo "[OK] $USERNAME's password set successfully."
+    read_password "Insert $username_output's password: " "$4"
+    echo "[OK] $username_output's password set successfully."
     echo
 
     echo "Hostname Rules:"
@@ -57,8 +59,8 @@ collect_system_configuration() {
     echo
 
     while true; do
-        read -rp "Insert the desired hostname: " HOSTNAME
-        if [[ ! "$HOSTNAME" =~ ^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*$ ]] || [[ ${#HOSTNAME} -gt 253 ]]; then
+        read -rp "Insert the desired hostname: " hostname_output
+        if [[ ! "$hostname_output" =~ ^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)*$ ]] || [[ ${#hostname_output} -gt 253 ]]; then
             echo "[ERROR] Invalid hostname. Try again."
             continue
         fi
